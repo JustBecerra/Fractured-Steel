@@ -1,0 +1,14 @@
+# Fractured Steel custom actors.
+# Demonstrates MiniYaml inheritance: fs_sentinel derives from the base
+# `example` actor (defined in rules/example.yaml) and overrides/extends it.
+
+fs_sentinel:
+	Inherits: example
+	RenderSprites:
+		Image: example
+	Tooltip:
+		Name: Sentinel Tower
+	Health:
+		HP: 50000
+	Selectable:
+		Bounds: 32, 32

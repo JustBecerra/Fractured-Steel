@@ -1,16 +1,16 @@
 Metadata:
-	Title: mod-title
+	Title: Fractured Steel
 	Version: {DEV_VERSION}
-	WindowTitle: mod-windowtitle
+	WindowTitle: Fractured Steel
 
 FileSystem: DefaultFileSystem
 	Packages:
 		^EngineDir
-		$example: example
+		$fracturedsteel: fracturedsteel
 		^EngineDir|mods/common: common
 
 MapFolders:
-	example|maps: System
+	fracturedsteel|maps: System
 
 Assemblies: OpenRA.Mods.Common.dll, OpenRA.Mods.Example.dll
 
@@ -19,7 +19,7 @@ AssetBrowser:
 	SpriteExtensions: .png
 	VideoExtensions:
 
-SupportsMapsFrom: Example
+SupportsMapsFrom: fracturedsteel
 
 LoadScreen: BlankLoadScreen
 

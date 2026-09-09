@@ -1,5 +1,5 @@
 Chrome:
-	example|chrome/chrome.yaml
+	fracturedsteel|chrome/chrome.yaml
 
 ChromeLayout:
 	common|chrome/assetbrowser.yaml
@@ -25,8 +25,8 @@ ChromeLayout:
 	common|chrome/ingame-infostats.yaml
 	common|chrome/ingame-menu.yaml
 	common|chrome/ingame-perf.yaml
-	example|chrome/ingame-observer.yaml
-	example|chrome/layouts/ingame-player.yaml
+	fracturedsteel|chrome/ingame-observer.yaml
+	fracturedsteel|chrome/layouts/ingame-player.yaml
 	common|chrome/ingame-transients.yaml
 	common|chrome/lobby.yaml
 	common|chrome/lobby-kickdialogs.yaml
@@ -107,8 +107,8 @@ FluentMessages:
 	common|fluent/chrome.ftl
 	common|fluent/hotkeys.ftl
 	common|fluent/rules.ftl
-	example|fluent/mod.ftl
-	example|fluent/chrome.ftl
-	example|fluent/rules.ftl
+	fracturedsteel|fluent/mod.ftl
+	fracturedsteel|fluent/chrome.ftl
+	fracturedsteel|fluent/rules.ftl
 
 AllowUnusedFluentMessagesInExternalPackages: true

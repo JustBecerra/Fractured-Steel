@@ -29,7 +29,7 @@ world:
 	SpawnMapActors:
 	SpawnStartingUnits:
 	StartingUnits@Example:
-		BaseActor: example
+		BaseActor: fs_sentinel
 		Factions: example
 		ClassName: options-starting-units.unlabeled
 

@@ -1,10 +1,10 @@
 MapFormat: 12
 
-RequiresMod: example
+RequiresMod: fracturedsteel
 
-Title: Example Shellmap
+Title: Proving Grounds
 
-Author: Example Author
+Author: Fractured Steel Team
 
 Tileset: EXAMPLE
 
@@ -12,7 +12,7 @@ MapSize: 34,34
 
 Bounds: 1,1,32,32
 
-Visibility: Shellmap
+Visibility: Lobby
 
 Categories: Maps
 
@@ -26,5 +26,13 @@ Players:
 		Name: Creeps
 		NonCombatant: True
 		Faction: Random
+	PlayerReference@Multi0:
+		Name: Multi0
+		Playable: True
+		Faction: Random
+		Enemies: Creeps
 
 Actors:
+	Actor0: mpspawn
+		Owner: Multi0
+		Location: 16,16

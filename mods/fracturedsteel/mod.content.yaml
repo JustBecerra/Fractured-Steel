@@ -1,0 +1,33 @@
+Cursors:
+	fracturedsteel|cursors/default.yaml
+
+Missions:
+	fracturedsteel|missions/example.yaml
+
+Music:
+	fracturedsteel|music/example.yaml
+
+Notifications:
+	fracturedsteel|notifications/example.yaml
+
+Rules:
+	fracturedsteel|rules/example.yaml
+	fracturedsteel|rules/fracturedsteel.yaml
+	fracturedsteel|rules/mpspawn.yaml
+	fracturedsteel|rules/palettes.yaml
+	fracturedsteel|rules/player.yaml
+	fracturedsteel|rules/world.yaml
+
+Sequences:
+	fracturedsteel|sequences/example.yaml
+	fracturedsteel|sequences/mapeditor.yaml
+	fracturedsteel|sequences/mpspawn.yaml
+
+TileSets:
+	fracturedsteel|tilesets/example.yaml
+	
+Voices:
+	fracturedsteel|voices/example.yaml
+
+Weapons:
+	fracturedsteel|weapons/example.yaml
