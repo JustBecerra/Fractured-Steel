@@ -22,3 +22,13 @@ fs_sentinel:
 		HP: 50000
 	Selectable:
 		Bounds: 48, 48
+	# Keep SelectionDecorations for the health bar, but hide its corner-bracket
+	# box (transparent) so only the custom green ground ring shows.
+	SelectionDecorations:
+		SelectionBoxColor: 00000000
+	# Custom trait (OpenRA.Mods.Example): draws the ring in the world layer,
+	# beneath the unit, only while selected.
+	WithSelectionRing:
+		Image: selectring
+		Sequence: idle
+		Palette: greyscale

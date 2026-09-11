@@ -3,3 +3,8 @@ eship:
 		Filename: sequences/assets/eship.png
 		Facings: -8
 		IgnoreWorldTint: true
+
+selectring:
+	idle:
+		Filename: sequences/assets/ring.png
+		IgnoreWorldTint: true
