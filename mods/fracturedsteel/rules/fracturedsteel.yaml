@@ -22,9 +22,32 @@ fs_sentinel:
 	GrantConditionOnMovement@MOVING:
 		Condition: moving
 		ValidMovementTypes: Horizontal
-	# Subtle idle hover bob, switched off while the unit is moving.
+	# Deploying puts the unit into its "building" state. This is a stand-in for
+	# the real worker-builds-buildings mechanic, which does not exist yet.
+	GrantConditionOnDeploy:
+		DeployedCondition: building
+		DeployCursor: default
+		DeployBlockedCursor: default
+		UndeployOnMove: true
+		SkipMakeAnimation: true
+	# Scanner cone projected from the cabin while building.
+	WithIdleOverlay@SCANNER:
+		Image: scanner
+		Sequence: idle
+		RequiresCondition: building
+	# Custom trait (OpenRA.Mods.Example): real light cast on the terrain under
+	# the far end of the cone, about one and a half cells ahead of the cabin.
+	ConditionalTerrainLightSource@SCANNER:
+		RequiresCondition: building
+		Range: 1c768
+		Intensity: 0.15
+		RedTint: 0.02
+		GreenTint: 0.25
+		BlueTint: 0.45
+		Offset: 1c500,0,0
+	# Subtle idle hover bob. Held steady while moving or scanning.
 	Hovers:
-		RequiresCondition: !moving
+		RequiresCondition: !moving && !building
 		BobDistance: -48
 		InitialHeight: 48
 		Ticks: 14

@@ -14,3 +14,16 @@ selectring:
 	idle:
 		Filename: sequences/assets/ring.png
 		IgnoreWorldTint: true
+
+# Scanner cone projected from the cabin while the unit is deployed to build.
+# Frames are centred on the same point as the eship frames, so the overlay
+# lines up with Offset: 0.
+# The sheet is facing-major: one row per facing, 8 sweep steps per row, which
+# matches the engine's `facingInner * stride + frame` lookup with Stride=Length.
+scanner:
+	idle:
+		Filename: sequences/assets/scanner.png
+		Length: 8
+		Facings: -8
+		Tick: 100
+		IgnoreWorldTint: true

@@ -1,6 +1,9 @@
 ^baseworld:
 	Inherits: ^palettes
 	ActorMap:
+	# Required by ConditionalTerrainLightSource. Default values are neutral,
+	# so this adds no global tint on its own.
+	TerrainLighting:
 	AlwaysVisible:
 	ControlGroups:
 	Faction@Random:
