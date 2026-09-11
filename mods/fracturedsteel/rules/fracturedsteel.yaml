@@ -16,6 +16,9 @@ fs_sentinel:
 		BlockedCursor: default
 	RenderSprites:
 		Image: eship
+	# Swap to the thrusters-firing frames while moving.
+	WithMoveAnimation:
+		MoveSequence: move
 	Tooltip:
 		Name: E-Ship
 	Health:

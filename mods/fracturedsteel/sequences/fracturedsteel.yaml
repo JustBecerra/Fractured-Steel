@@ -1,6 +1,12 @@
 eship:
+	# Frames 0-7: thrusters off. Frames 8-15: thrusters firing.
 	idle:
 		Filename: sequences/assets/eship.png
+		Facings: -8
+		IgnoreWorldTint: true
+	move:
+		Filename: sequences/assets/eship.png
+		Start: 8
 		Facings: -8
 		IgnoreWorldTint: true
 
