@@ -1,6 +1,7 @@
 Container@PLAYER_WIDGETS:
-	Logic: MenuButtonsChromeLogic
+	Logic: MenuButtonsChromeLogic, DeployHotkeyLogic
 	Children:
+		LogicKeyListener@DEPLOY_KEY_LISTENER:
 		LogicTicker@SIDEBAR_TICKER:
 		MenuButton@OPTIONS_BUTTON:
 			Key: escape
