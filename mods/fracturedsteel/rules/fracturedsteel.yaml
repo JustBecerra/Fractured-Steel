@@ -4,11 +4,21 @@
 
 fs_sentinel:
 	Inherits: example
+	-Immobile:
+	-WithSpriteBody:
+	WithFacingSpriteBody:
+	Mobile:
+		Locomotor: fsvehicle
+		Speed: 85
+		TurnSpeed: 30
+		TurnsWhileMoving: true
+		Cursor: default
+		BlockedCursor: default
 	RenderSprites:
-		Image: example
+		Image: eship
 	Tooltip:
-		Name: Sentinel Tower
+		Name: E-Ship
 	Health:
 		HP: 50000
 	Selectable:
-		Bounds: 32, 32
+		Bounds: 48, 48

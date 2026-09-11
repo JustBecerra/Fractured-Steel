@@ -1,0 +1,5 @@
+eship:
+	idle:
+		Filename: sequences/assets/eship.png
+		Facings: -8
+		IgnoreWorldTint: true

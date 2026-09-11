@@ -20,6 +20,11 @@
 
 world:
 	Inherits: ^baseworld
+	PathFinder:
+	Locomotor@fsvehicle:
+		Name: fsvehicle
+		TerrainSpeeds:
+			Clear: 100
 	ColorPickerManager:
 		PreviewActor: example.colorpicker
 	CreateMapPlayers:

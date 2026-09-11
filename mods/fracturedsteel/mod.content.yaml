@@ -22,6 +22,7 @@ Sequences:
 	fracturedsteel|sequences/example.yaml
 	fracturedsteel|sequences/mapeditor.yaml
 	fracturedsteel|sequences/mpspawn.yaml
+	fracturedsteel|sequences/fracturedsteel.yaml
 
 TileSets:
 	fracturedsteel|tilesets/example.yaml
