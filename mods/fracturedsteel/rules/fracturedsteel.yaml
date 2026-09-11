@@ -19,6 +19,16 @@ fs_sentinel:
 	# Swap to the thrusters-firing frames while moving.
 	WithMoveAnimation:
 		MoveSequence: move
+	GrantConditionOnMovement@MOVING:
+		Condition: moving
+		ValidMovementTypes: Horizontal
+	# Subtle idle hover bob, switched off while the unit is moving.
+	Hovers:
+		RequiresCondition: !moving
+		BobDistance: -48
+		InitialHeight: 48
+		Ticks: 14
+		RiseTicks: 14
 	Tooltip:
 		Name: E-Ship
 	Health:
