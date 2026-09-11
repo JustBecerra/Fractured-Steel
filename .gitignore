@@ -1,6 +1,11 @@
 user.config
 engine
 
+# Scratch art, Blender render output and placeholders. Some files here are
+# derived from Metal Fatigue and must never ship. Only assets under
+# mods/*/sequences/assets are part of the game. See AGENTS.md.
+art/
+
 # Visual Studio
 Release
 bin

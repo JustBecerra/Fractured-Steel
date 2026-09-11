@@ -35,7 +35,8 @@ that must never be broken.
 | `mods/fracturedsteel/` | All mod data (MiniYaml + PNG assets). The game itself. |
 | `OpenRA.Mods.Example/` | Our custom C# traits, compiled to `OpenRA.Mods.Example.dll`. |
 | `engine/` | The OpenRA engine, auto-downloaded. **Gitignored — never edit.** Read it for reference. |
-| `art/` | Scratch placeholder art and render output. **Untracked.** |
+| `art/` | Scratch placeholder art and render output. **Gitignored.** |
+| `tools/` | Asset pipeline scripts, run from the repo root. |
 | `docs/` | Longer-form documentation. |
 | `mod.config` | Mod id, engine version, packaging settings. |
 

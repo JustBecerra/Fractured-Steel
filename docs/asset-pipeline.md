@@ -156,8 +156,10 @@ selection ellipse), draw at 4× resolution and downscale with `LANCZOS`.
 
 ## Checklist for new/changed sprites
 
-1. Render frames to `art/placeholders/` (untracked).
-2. Pack into a sheet with correct `FrameSize` / `FrameAmount` metadata.
+1. Render frames to `art/placeholders/` (gitignored).
+2. Pack into a sheet with correct `FrameSize` / `FrameAmount` metadata. The
+   scanner's packer is `tools/pack_scanner_sheet.py`, run from the repo root;
+   it is deterministic, so re-running it on unchanged renders is a no-op.
 3. Add or update the sequence in `mods/fracturedsteel/sequences/fracturedsteel.yaml`.
 4. Run `./utility.sh --check-yaml`.
 5. Launch and verify facings by moving the unit in all eight directions.
