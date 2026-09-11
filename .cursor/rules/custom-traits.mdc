@@ -1,0 +1,55 @@
+---
+description: Writing custom OpenRA traits in OpenRA.Mods.Example
+globs: OpenRA.Mods.Example/**/*.cs
+alwaysApply: false
+---
+
+# Custom traits
+
+## Write C# only as a last resort
+
+First search `engine/OpenRA.Mods.Common/Traits/` for an existing trait. The engine
+covers far more than is obvious, and stock traits require no rebuild. Only add C# when
+nothing stock can do the job.
+
+## Rebuild after every change
+
+```bash
+make RUNTIME=net6
+```
+
+Output goes to `engine/bin/OpenRA.Mods.Example.dll`, which `mods/fracturedsteel/mod.yaml`
+loads via `Assemblies:`. YAML-only changes do **not** need a rebuild; C# changes always
+do. Note this restores NuGet packages and needs unrestricted network access.
+
+## Trait shape
+
+Every trait is a pair: an `Info` class carrying the YAML fields, and the trait itself.
+
+```csharp
+public class MyTraitInfo : TraitInfo
+{
+    [FieldLoader.Require]
+    [Desc("Shown in the trait documentation.")]
+    public readonly string Image = null;
+
+    public override object Create(ActorInitializer init) { return new MyTrait(init.Self, this); }
+}
+
+public class MyTrait : IRender, ITick { /* ... */ }
+```
+
+- Public `readonly` fields on the `Info` class map 1:1 to YAML keys.
+- Always add `[Desc(...)]`; it is the generated documentation.
+- Derive from `ConditionalTraitInfo` to get free `RequiresCondition` support.
+
+## Rendering layers
+
+`IRender` draws in the **world** layer, so a negative `ZOffset` puts a sprite beneath the
+actor. `WithDecoration` and other decorations always draw in the top annotation layer and
+cannot be placed under a unit — this is why `WithSelectionRing` exists.
+
+## Licensing
+
+The engine is GPLv3 and loads this assembly, so all code here must remain
+GPLv3-compatible.

@@ -1,0 +1,50 @@
+---
+description: MiniYaml conventions for OpenRA mod data under mods/
+globs: mods/**/*.yaml
+alwaysApply: false
+---
+
+# MiniYaml rules
+
+## Indent with TABS, never spaces
+
+OpenRA's MiniYaml parser requires tab indentation. Spaces cause parse errors or
+silently misnested traits.
+
+## Always validate after editing
+
+```bash
+export DOTNET_ROOT="$HOME/.dotnet" && export PATH="$HOME/.dotnet:$PATH"
+./utility.sh --check-yaml
+```
+
+Run from the repo root. It catches unknown traits, bad field names, and dangling
+references. Never hand off a YAML change without running it.
+
+## Syntax
+
+- `Inherits: example` pulls in another actor definition.
+- `-Immobile:` **removes** an inherited trait.
+- `Trait@SUFFIX:` allows multiple instances, e.g. `GrantConditionOnMovement@MOVING:`.
+- Conditions use boolean expressions: `RequiresCondition: !moving`.
+
+## Only reference things this mod actually defines
+
+This is a small mod; most stock assets do not exist here. Check before referencing:
+
+- Palettes (`rules/palettes.yaml`): only `greyscale`, `player`, `colorpicker`.
+  There is **no `chrome` palette**, so traits defaulting to it will fail lint.
+- Cursors (`cursors/default.yaml`): only `default`. `Mobile` must set
+  `Cursor: default` and `BlockedCursor: default` or lint fails on `move`/`move-blocked`.
+- Terrain (`tilesets/example.yaml`): only `Clear`.
+
+## Prefer stock traits over new C#
+
+Search `engine/OpenRA.Mods.Common/Traits/` before writing code. Stock traits need no
+rebuild and are already tested.
+
+## World-level traits are easy to forget
+
+Unit traits often need a counterpart on the `world:` actor in `rules/world.yaml`.
+`Mobile` requires both a `PathFinder:` and a matching `Locomotor@...:` there, or the
+game crashes at actor creation with "world does not have trait of type IPathFinder".

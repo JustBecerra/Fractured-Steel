@@ -1,0 +1,114 @@
+# Fractured Steel — agent context
+
+Read this before making changes. It describes what the project is, how to build and
+validate it, and the conventions and gotchas that are easy to get wrong.
+
+## What this is
+
+Fractured Steel is a real-time strategy game built on the **OpenRA** engine using the
+**OpenRA Mod SDK**. The design goal is a game about large, *modularly assembled* combat
+walkers ("Frames") — you build a chassis and bolt on parts that change its stats and
+weapons.
+
+The concept is inspired by the 1999 RTS *Metal Fatigue*, but this is an **original,
+legally clean work**. See "Legal constraints" below; it is the one rule in this document
+that must never be broken.
+
+- Engine: OpenRA, pinned to `release-20250330` (see `mod.config` → `ENGINE_VERSION`).
+- Engine license: GPLv3. Custom C# loaded by the engine must be GPLv3-compatible.
+- Mod id: `fracturedsteel`. Platform: developed on Linux.
+
+## Legal constraints (do not violate)
+
+- **No *Metal Fatigue* assets may ship.** No sprites, sounds, names, logos, or text
+  derived from Zono/Metal Fatigue in any released build.
+- The `art/` directory holds scratch placeholders, some of which *are* derived from
+  Metal Fatigue. It is **deliberately untracked** and must stay out of every commit.
+  Never `git add art/`.
+- Anything shipped must be originally authored (e.g. rendered from our own Blender
+  models) or under a compatible license.
+
+## Repository layout
+
+| Path | Purpose |
+| --- | --- |
+| `mods/fracturedsteel/` | All mod data (MiniYaml + PNG assets). The game itself. |
+| `OpenRA.Mods.Example/` | Our custom C# traits, compiled to `OpenRA.Mods.Example.dll`. |
+| `engine/` | The OpenRA engine, auto-downloaded. **Gitignored — never edit.** Read it for reference. |
+| `art/` | Scratch placeholder art and render output. **Untracked.** |
+| `docs/` | Longer-form documentation. |
+| `mod.config` | Mod id, engine version, packaging settings. |
+
+Inside `mods/fracturedsteel/`: `rules/` (actor definitions), `sequences/` (sprite
+definitions + `assets/*.png`), `weapons/`, `tilesets/`, `cursors/`, `chrome/` (UI),
+`maps/`, `fluent/` (localized strings).
+
+## Commands
+
+Run all of these from the repository root.
+
+```bash
+# Build custom C# (OpenRA.Mods.Example) and fetch the engine if missing.
+make RUNTIME=net6
+
+# Launch the game.
+./launch-game.sh
+
+# Validate all MiniYaml. ALWAYS run this after editing anything under mods/.
+export DOTNET_ROOT="$HOME/.dotnet" && export PATH="$HOME/.dotnet:$PATH"
+./utility.sh --check-yaml
+```
+
+`--check-yaml` is the primary safety net: it catches unknown traits, bad field names,
+undefined cursors/palettes/sequences, and broken inheritance. A silent run listing the
+mod and its maps means success.
+
+Note for sandboxed agents: `make` restores NuGet packages and needs unrestricted network
+access, as does `git push`. Both fail with DNS errors under a restricted sandbox.
+
+## Current state
+
+One real unit exists, `fs_sentinel` ("E-Ship"), defined in
+`mods/fracturedsteel/rules/fracturedsteel.yaml`. It is a hovering scout rendered from our
+own Blender model (`~/Desktop/FracturedSteel-assets/worker.blend`, outside this repo).
+
+It currently has:
+
+- 8-facing rotation via `WithFacingSpriteBody`, driven by `sequences/assets/eship.png`.
+- Movement (`Mobile` + `fsvehicle` locomotor + `PathFinder`, both wired up in
+  `rules/world.yaml`), turning while moving so orders feel responsive.
+- Rear thrusters that light up with blue exhaust only while moving (`WithMoveAnimation`
+  swapping to the `move` sequence).
+- A subtle idle hover bob (`Hovers`), disabled while moving via
+  `GrantConditionOnMovement`.
+- A green ground selection ring drawn *beneath* the unit by our custom
+  `WithSelectionRing` trait.
+- A scanner cone projected from the cabin while deployed, combining a
+  `WithIdleOverlay` sprite with a real terrain light from our custom
+  `ConditionalTerrainLightSource` trait. Deploying (right-click the selected
+  unit) is a **placeholder trigger** standing in for the real
+  worker-builds-buildings mechanic, which does not exist yet.
+
+The stock SDK `example` actor and its assets still exist and are inherited from; they are
+template leftovers, not final design.
+
+### Not built yet
+
+The Frame assembly concept, economy and base building, tech tree, weapons, and AI are all
+still unimplemented. There is no design document yet.
+
+## Conventions
+
+- **MiniYaml is indented with TABS, never spaces.** See `.cursor/rules/miniyaml.mdc`.
+- Prefer an existing engine trait over new C#. Search `engine/OpenRA.Mods.Common/Traits/`
+  first — the engine has far more built in than is obvious, and stock traits need no
+  rebuild. `Hovers` and `GrantConditionOnMovement` were both found this way instead of
+  being written from scratch.
+- Only write custom C# when no stock trait can do the job. See
+  `.cursor/rules/custom-traits.mdc`.
+- Keep commits scoped to one feature.
+
+## Further reading
+
+- `docs/asset-pipeline.md` — how sprites are produced in Blender and packed into sheets,
+  including the isometric facing math. Read this before touching any unit sprite.
