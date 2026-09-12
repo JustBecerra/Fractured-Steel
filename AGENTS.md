@@ -98,6 +98,22 @@ template leftovers, not final design.
 The Frame assembly concept, economy and base building, tech tree, weapons, and AI are all
 still unimplemented. There is no design document yet.
 
+### Gotcha: there is no vision system, and fog silently eats effects
+
+No actor has `RevealsShroud` and the world has no `ShroudRenderer`, so nothing ever grants
+vision and fog is never drawn. But the player's `Shroud` trait defaults fog to **on**, and
+`Shroud.IsVisible` only reports a cell visible if some source revealed it. The upshot is
+*invisible* fog that covers the whole map.
+
+Actors are unaffected because they all carry `AlwaysVisible`. Anything rendered as an
+`IEffect` is not: `SpriteEffect.Render()` returns nothing when `world.FogObscures(pos)`, so
+smoke, explosions, muzzle flashes and projectile trails all spawn correctly and then draw
+nothing. This cost real debugging time once already.
+
+Fog is therefore turned off and locked in `rules/player.yaml`. **If you ever re-enable it,
+add `RevealsShroud` to units and a `ShroudRenderer` first**, or every effect in the game
+will silently disappear. `VisibleThroughFog: true` is the per-effect escape hatch.
+
 ## Conventions
 
 - **MiniYaml is indented with TABS, never spaces.** See `.cursor/rules/miniyaml.mdc`.

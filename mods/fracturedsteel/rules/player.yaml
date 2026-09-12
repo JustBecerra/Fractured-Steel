@@ -1,6 +1,14 @@
 ^baseplayer:
 	AlwaysVisible:
+	# Fog defaults to ON, but nothing in the mod has RevealsShroud, so no cell is
+	# ever marked visible and there is no ShroudRenderer to draw the fog either.
+	# The result is invisible fog that culls every IEffect in the world:
+	# SpriteEffect.Render() bails out on world.FogObscures(pos). Actors escape it
+	# only because they carry AlwaysVisible. Keep fog off and locked until there
+	# is a real vision system (RevealsShroud on units plus a ShroudRenderer).
 	Shroud:
+		FogCheckboxEnabled: false
+		FogCheckboxLocked: true
 
 player:
 	Inherits: ^baseplayer
