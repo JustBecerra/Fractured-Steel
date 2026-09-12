@@ -38,6 +38,7 @@ world:
 	SpawnStartingUnits:
 	StartingUnits@Example:
 		BaseActor: fs_sentinel
+		SupportActors: fs_tank, fs_tank
 		Factions: example
 		ClassName: options-starting-units.unlabeled
 

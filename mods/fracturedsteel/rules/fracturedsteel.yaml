@@ -68,3 +68,54 @@ fs_sentinel:
 		Image: selectring
 		Sequence: idle
 		Palette: greyscale
+
+# Tracked tank, turret mounted at the rear over a front engine deck.
+# Slower and heavier than the hovering E-Ship, and it does not bob.
+fs_tank:
+	Inherits: example
+	-Immobile:
+	-WithSpriteBody:
+	WithFacingSpriteBody:
+	Mobile:
+		Locomotor: fsvehicle
+		Speed: 64
+		TurnSpeed: 20
+		TurnsWhileMoving: true
+		Cursor: default
+		BlockedCursor: default
+	RenderSprites:
+		Image: tank
+	Tooltip:
+		Name: Tank
+	Health:
+		HP: 90000
+	Selectable:
+		Bounds: 48, 48
+	SelectionDecorations:
+		SelectionBoxColor: 00000000
+	WithSelectionRing:
+		Image: selectring
+		Sequence: idle
+		Palette: greyscale
+	# Exhaust smoke from the two outlets on the rear plate, one trait per pipe.
+	# Offsets are (forward, right, up) in the actor's local frame and rotate with
+	# it, so negative forward stays behind the hull at every facing. For the
+	# magnitude: one Blender unit is 9.52px in the sprite, foreshortened by
+	# sin(49.4) for the camera elevation, and one pixel is 32 world units at this
+	# TileSize, giving ~231 units per horizontal Blender unit.
+	# VisibleThroughFog matches the AlwaysVisible actors: if the tank is always
+	# drawn, its exhaust should be too, whatever the fog settings say.
+	LeavesTrails@EXHAUSTLEFT:
+		Image: smoke
+		Palette: greyscale
+		Type: CenterPosition
+		Offsets: -444,-116,0
+		MovingInterval: 4
+		VisibleThroughFog: true
+	LeavesTrails@EXHAUSTRIGHT:
+		Image: smoke
+		Palette: greyscale
+		Type: CenterPosition
+		Offsets: -444,116,0
+		MovingInterval: 4
+		VisibleThroughFog: true

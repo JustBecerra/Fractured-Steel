@@ -69,11 +69,23 @@ access, as does `git push`. Both fail with DNS errors under a restricted sandbox
 
 ## Current state
 
-One real unit exists, `fs_sentinel` ("E-Ship"), defined in
-`mods/fracturedsteel/rules/fracturedsteel.yaml`. It is a hovering scout rendered from our
-own Blender model (`~/Desktop/FracturedSteel-assets/worker.blend`, outside this repo).
+Two units exist, both in `mods/fracturedsteel/rules/fracturedsteel.yaml` and both rendered
+from our own Blender models (kept in `~/Desktop/FracturedSteel-assets/`, outside this repo).
 
-It currently has:
+`fs_sentinel` ("E-Ship") is a hovering scout from `worker.blend`. **Caveat:** the saved
+`worker.blend` is the original pre-thruster state — it has no `Pivot` or `RCam` and no
+thruster geometry, because those were added in a live Blender session that was never
+saved. The committed sprites are fine, but re-rendering the ship means rebuilding that rig
+first (see `docs/asset-pipeline.md` for the camera values).
+
+`fs_tank` ("Tank") is a tracked vehicle from `tank.blend`, with the turret mounted at the
+rear over a front engine deck, Merkava/TAM style, and a pintle-mounted FM MAG on the turret
+roof. It is slower and heavier than the ship and does not hover. It trails exhaust smoke
+from two rear outlets while moving, via two `LeavesTrails` traits. `tank.blend` was made by
+opening `worker.blend` and saving under a new name, so it inherits identical lights, world
+and render settings — which is why both units share a look and a pixel scale.
+
+The ship currently has:
 
 - 8-facing rotation via `WithFacingSpriteBody`, driven by `sequences/assets/eship.png`.
 - Movement (`Mobile` + `fsvehicle` locomotor + `PathFinder`, both wired up in

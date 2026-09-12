@@ -40,6 +40,12 @@ Render setup: orthographic camera aimed at the model centre, `film_transparent =
 and objects toggled per-frame with `hide_render` to produce variant states (e.g.
 thrusters on/off).
 
+**Gotcha:** `matrix_world` is cached and only recomputed when the depsgraph is
+evaluated. Setting `location`/`rotation_euler`/`scale` and then reading `matrix_world`
+in the same script returns **stale matrices**, so any bounding box you compute from
+them is wrong. Call `bpy.context.view_layer.update()` first. This silently mis-aimed
+the tank camera by 0.07 units before it was caught.
+
 **Keep the world-units-per-pixel constant** across re-renders, or the unit will change
 size on screen. For the current sheet: `WPP = 0.020569`, so the render resolution is
 `ceil(ortho_scale / WPP)` — growing the model's bounding radius grows the render size
@@ -99,19 +105,63 @@ meta.add_text("FrameAmount", "16")
 sheet.save(path, pnginfo=meta)
 ```
 
-### Current `eship.png`
+### Current sheets
 
-480×120, sixteen 60×60 frames:
+`eship.png` — 480×120, sixteen 60×60 frames:
 
 | Frames | Contents |
 | --- | --- |
 | 0-7 | Facings 0-7, thrusters off (`idle` sequence) |
 | 8-15 | Facings 0-7, thrusters firing (`move` sequence, `Start: 8`) |
 
+`tank.png` — 480×60, eight 60×60 frames, facings 0-7. Rendered from `tank.blend` through
+the same camera and `ortho_scale` as `eship`, so the two units share a pixel scale.
+Turret is part of the hull sprite: `WithSpriteTurret` requires an `Armament`, so an
+independently rotating turret means building out a weapon first. The turret parts are
+separate objects in the .blend, so splitting them into their own sheet is one extra
+render pass.
+
+`smoke.png` — 384×32, twelve 32×32 frames, one puff's life. Procedural, see
+`tools/make_smoke_sheet.py`.
+
 Frame index within a sequence is `start + facingInner * stride + frame`, where `stride`
 defaults to `Length`. So a multi-frame *animated* sequence per facing must be laid out
 facing-major, with `Length` and `Stride` set to the number of animation frames — and
 any later sequence's `Start` must be shifted accordingly.
+
+## Blender units to OpenRA world units
+
+Traits that position things relative to an actor (`LeavesTrails.Offsets`,
+`WithIdleOverlay.Offset`, `ConditionalTerrainLightSource.Offset`) take WVec triples of
+`(forward, right, up)` in OpenRA world units. To place one at a feature you modelled,
+convert from Blender units:
+
+- One Blender unit is `1 / WPP_FINAL` = **9.52 px** in the final sprite.
+- `TileSize` is 32×32 and one cell is 1024 world units, so **one pixel is 32 world units**.
+- OpenRA projects world X/Y to screen 1:1 (square tiles), while the Blender camera
+  foreshortens the ground plane by `sin(49.4°)` = **0.76**. Horizontal offsets must be
+  multiplied by this or they overshoot by ~32%.
+
+Net: **~231 world units per horizontal Blender unit** (`9.52 × 0.76 × 32`), and ~198 per
+Blender unit of *height*, since height projects through the camera's up vector instead.
+Measure the feature relative to the `Pivot`, since the sprite frame is centred on it.
+
+Worked example — the tank's exhaust outlets sit at Blender `(-1.90, ±0.50, 0.76)` with the
+pivot at `(0.02, 0, 0.80)`, so relative `(-1.92, ±0.50, -0.04)`, giving
+`Offsets: -444,-116,0` and `-444,116,0`. The height difference is a quarter of a pixel and
+rounds away.
+
+Because the projections do not match exactly, treat the result as a good starting value
+and check it in game.
+
+## Legibility beats real scale
+
+At a 60px frame, small details modelled to true scale disappear. The tank's FM MAG was
+first built at its real size relative to the hull, which put the barrel at **0.6 px** —
+sub-pixel, so it rendered as a faint smear. Roughly doubling it (1.5 px barrel, standing
+~4 px above the turret roof) and pushing it outboard so it breaks the roof silhouette made
+it read. Exaggerate small features and prefer positions that break an outline rather than
+sit inside one.
 
 ## Colour: beware the AgX view transform
 
