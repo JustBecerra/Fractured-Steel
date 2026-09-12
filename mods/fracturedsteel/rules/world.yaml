@@ -24,8 +24,17 @@
 world:
 	Inherits: ^baseworld
 	PathFinder:
+	# Hovercraft-style movement, used by the E-Ship.
 	Locomotor@fsvehicle:
 		Name: fsvehicle
+		TerrainSpeeds:
+			Clear: 100
+	# Tracked vehicles get their own locomotor so their terrain handling can
+	# diverge from the hovering one later: rough ground should slow tracks down,
+	# and tracks are where crushing belongs. Identical for now, since Clear is
+	# the only terrain type that exists.
+	Locomotor@fstracked:
+		Name: fstracked
 		TerrainSpeeds:
 			Clear: 100
 	ColorPickerManager:

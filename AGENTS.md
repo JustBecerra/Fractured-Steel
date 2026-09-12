@@ -64,6 +64,16 @@ export DOTNET_ROOT="$HOME/.dotnet" && export PATH="$HOME/.dotnet:$PATH"
 undefined cursors/palettes/sequences, and broken inheritance. A silent run listing the
 mod and its maps means success.
 
+To confirm what an actor *actually* ends up with after inheritance — rather than reading
+the yaml and hoping — ask the engine to resolve it:
+
+```bash
+./utility.sh --resolved-rules fs_tank
+```
+
+There are matching `--resolved-sequences` and `--resolved-weapons` commands. Use these to
+verify inheritance instead of assuming a template merged correctly.
+
 Note for sandboxed agents: `make` restores NuGet packages and needs unrestricted network
 access, as does `git push`. Both fail with DNS errors under a restricted sandbox.
 
@@ -81,7 +91,15 @@ first (see `docs/asset-pipeline.md` for the camera values).
 `fs_tank` ("Tank") is a tracked vehicle from `tank.blend`, with the turret mounted at the
 rear over a front engine deck, Merkava/TAM style, and a pintle-mounted FM MAG on the turret
 roof. It is slower and heavier than the ship and does not hover. It trails exhaust smoke
-from two rear outlets while moving, via two `LeavesTrails` traits. `tank.blend` was made by
+from two rear outlets while moving, via two `LeavesTrails` traits.
+
+Its movement comes from the **`^tracked`** template, which every tracked vehicle should
+inherit so they all handle alike: pivot in place before setting off
+(`TurnsWhileMoving: false`), never arc between cells (`AlwaysTurnInPlace: true`, which the
+engine recommends for actors with few sprite facings), a slow turn rate, and reversing out
+of short moves rather than three-point turning. The hovering ship deliberately does the
+opposite. Tracked units use the `fstracked` locomotor, kept separate from the hover
+`fsvehicle` so terrain handling and crushing can diverge later. `tank.blend` was made by
 opening `worker.blend` and saving under a new name, so it inherits identical lights, world
 and render settings — which is why both units share a look and a pixel scale.
 

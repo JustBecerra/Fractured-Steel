@@ -2,11 +2,39 @@
 # Demonstrates MiniYaml inheritance: fs_sentinel derives from the base
 # `example` actor (defined in rules/example.yaml) and overrides/extends it.
 
+# Shared movement profile for tracked vehicles. Tracks steer by driving one
+# track against the other, so they pivot on the spot and then drive in straight
+# lines — quite unlike the hovering E-Ship, which banks smoothly through its
+# turns without slowing down. Inherit this from every tracked unit so they all
+# handle the same way.
+^tracked:
+	Mobile:
+		Locomotor: fstracked
+		# Come to a stop and pivot to face the first waypoint before setting off,
+		# rather than steering while rolling.
+		TurnsWhileMoving: false
+		# Never follow a curved trajectory between cells. The engine recommends
+		# this for actors with a limited number of sprite facings, and we have 8:
+		# arcing between them reads as sliding rather than driving.
+		AlwaysTurnInPlace: true
+		# Deliberate and heavy, but not ponderous: stopping to pivot makes a slow
+		# turn rate feel worse than it looks on paper. The E-Ship turns at 30.
+		TurnSpeed: 18
+		Speed: 64
+		# Reverse straight out of short moves instead of making a three-point
+		# turn, the way a real tank would.
+		CanMoveBackward: true
+		MaxBackwardCells: 3
+		Cursor: default
+		BlockedCursor: default
+
 fs_sentinel:
 	Inherits: example
 	-Immobile:
 	-WithSpriteBody:
 	WithFacingSpriteBody:
+	# Hovering movement: steers while under way and banks through turns without
+	# stopping. Deliberately the opposite of ^tracked.
 	Mobile:
 		Locomotor: fsvehicle
 		Speed: 85
@@ -71,18 +99,13 @@ fs_sentinel:
 
 # Tracked tank, turret mounted at the rear over a front engine deck.
 # Slower and heavier than the hovering E-Ship, and it does not bob.
+# Movement comes from ^tracked, so it pivots in place instead of gliding.
 fs_tank:
 	Inherits: example
+	Inherits@TRACKED: ^tracked
 	-Immobile:
 	-WithSpriteBody:
 	WithFacingSpriteBody:
-	Mobile:
-		Locomotor: fsvehicle
-		Speed: 64
-		TurnSpeed: 20
-		TurnsWhileMoving: true
-		Cursor: default
-		BlockedCursor: default
 	RenderSprites:
 		Image: tank
 	Tooltip:
