@@ -80,6 +80,10 @@ def grain(size, sigma=28):
     return Image.effect_noise(size, sigma).convert("L")
 
 
+CLOUD = (208, 226, 238)
+CLOUD_SHADE = (192, 214, 230)
+
+
 def desert_fill(size):
     """Flat desert slab with dusty blotches. No sky-to-sand gradient."""
     base = Image.new("RGB", size, SAND)
@@ -94,6 +98,55 @@ def desert_fill(size):
     return out.convert("RGBA")
 
 
+def backdrop(horizon_frac):
+    """Clear sky above a hard desert horizon. `horizon_frac` is where sand starts."""
+    horizon = int(FRAME * horizon_frac)
+    canvas = Image.new("RGBA", (FRAME, FRAME), SKY + (255,))
+    if horizon < FRAME:
+        canvas.paste(desert_fill((FRAME, FRAME - horizon)), (0, horizon))
+    return canvas
+
+
+def paint_distant_clouds(canvas, horizon):
+    """Two small distant clouds in the sky only. Flat puffs, no sky gradient."""
+    from PIL import ImageDraw
+
+    w, h = canvas.size
+    layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer)
+
+    def puff(cx, cy, rx, ry, fill):
+        draw.ellipse((cx - rx, cy - ry, cx + rx, cy + ry), fill=fill)
+
+    def cloud(cx, cy, scale, alpha=210):
+        fill = CLOUD + (alpha,)
+        shade = CLOUD_SHADE + (int(alpha * 0.8),)
+        puffs = (
+            (0, 2, 17, 7, shade),
+            (-11, 0, 11, 6, fill),
+            (1, -3, 15, 7, fill),
+            (12, 1, 10, 5, fill),
+        )
+        for dx, dy, rx, ry, col in puffs:
+            puff(
+                cx + round(dx * scale),
+                cy + round(dy * scale),
+                max(2, round(rx * scale)),
+                max(2, round(ry * scale)),
+                col,
+            )
+
+    cloud(30, max(8, horizon - 26), 0.72)
+    cloud(128, max(8, horizon - 20), 0.55)
+
+    layer = layer.filter(ImageFilter.GaussianBlur(0.9))
+    sky = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(sky).rectangle((0, 0, w, horizon), fill=255)
+    a = ImageChops.multiply(layer.getchannel("A"), sky)
+    layer.putalpha(a)
+    return Image.alpha_composite(canvas, layer)
+
+
 def hq_scene(src):
     """Keep stairs, doors and annex intact; desert only where the render is empty."""
     im = Image.open(src).convert("RGBA")
@@ -101,16 +154,34 @@ def hq_scene(src):
     subject = unsharp(subject)
     subject = edge_darken(subject)
 
-    horizon = int(FRAME * 0.54)
-    canvas = Image.new("RGBA", (FRAME, FRAME), SKY + (255,))
-    canvas.paste(desert_fill((FRAME, FRAME - horizon)), (0, horizon))
+    canvas = backdrop(0.54)
     canvas.paste(subject, (0, 0), subject)
+    return canvas
+
+
+def tank_scene(src):
+    """Same flat sky and dusty ground as the HQ; tank pixels are not painted."""
+    im = Image.open(src).convert("RGBA")
+    im = crop_alpha(im)
+    # Fill more of the frame, but keep a strip of sky to the right of the muzzle.
+    subject = fit(im, FRAME - 24)
+    subject = unsharp(subject)
+    subject = edge_darken(subject)
+
+    horizon_frac = 0.50
+    horizon = int(FRAME * horizon_frac)
+    canvas = paint_distant_clouds(backdrop(horizon_frac), horizon)
+    x = 8
+    y = (FRAME - subject.height) // 2
+    canvas.paste(subject, (x, y), subject)
     return canvas
 
 
 def frame_unit(src, environment=None):
     if environment == "hq":
         return hq_scene(src)
+    if environment == "tank":
+        return tank_scene(src)
 
     im = Image.open(src).convert("RGBA")
     im = crop_alpha(im)
@@ -149,7 +220,7 @@ def main():
         src = SRC / f"{name}.png"
         if not src.is_file():
             raise SystemExit(f"missing render {src}")
-        sheet.paste(frame_unit(src, environment=name if name == "hq" else None), (i * FRAME, 0))
+        sheet.paste(frame_unit(src, environment=name if name in ("hq", "tank") else None), (i * FRAME, 0))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(OUT)
     print(f"wrote {OUT} {sheet.size} frames={len(UNITS)} size={FRAME}")
