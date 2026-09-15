@@ -398,3 +398,4 @@ portraits:
 	Regions:
 		tank: 0, 0, 160, 160
 		eship: 160, 0, 160, 160
+		hq: 320, 0, 160, 160

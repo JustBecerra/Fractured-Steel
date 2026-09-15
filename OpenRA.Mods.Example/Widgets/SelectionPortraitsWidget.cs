@@ -24,7 +24,8 @@ namespace OpenRA.Mods.Example.Widgets
 		public static readonly Dictionary<string, string> ByActor = new()
 		{
 			["fs_tank"] = "tank",
-			["fs_sentinel"] = "eship"
+			["fs_sentinel"] = "eship",
+			["fs_hq"] = "hq"
 		};
 
 		readonly World world;

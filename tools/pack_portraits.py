@@ -24,7 +24,12 @@ MARGIN = 14
 SHADOW_OFFSET = (5, 7)
 SHADOW_BLUR = 9
 SHADOW_ALPHA = 110
-UNITS = ("tank", "eship")
+UNITS = ("tank", "eship", "hq")
+
+SKY = (176, 214, 238)
+SAND = (201, 168, 112)
+SAND_DARK = (168, 132, 82)
+SAND_LIGHT = (224, 196, 148)
 
 
 def crop_alpha(im, pad=2):
@@ -71,7 +76,42 @@ def unsharp(im):
     return im.filter(ImageFilter.UnsharpMask(radius=1.6, percent=140, threshold=2))
 
 
-def frame_unit(src):
+def grain(size, sigma=28):
+    return Image.effect_noise(size, sigma).convert("L")
+
+
+def desert_fill(size):
+    """Flat desert slab with dusty blotches. No sky-to-sand gradient."""
+    base = Image.new("RGB", size, SAND)
+    n1 = grain((max(1, size[0] // 10), max(1, size[1] // 6)), 36).resize(size, Image.BILINEAR)
+    n2 = grain((max(1, size[0] // 4), max(1, size[1] // 3)), 24).resize(size, Image.BILINEAR)
+    dark = Image.new("RGB", size, SAND_DARK)
+    light = Image.new("RGB", size, SAND_LIGHT)
+    dark_m = n1.point(lambda v: max(0, min(255, (v - 132) * 3)))
+    light_m = n2.point(lambda v: max(0, min(255, (v - 148) * 2)))
+    out = Image.composite(dark, base, dark_m)
+    out = Image.composite(light, out, light_m.point(lambda v: int(v * 0.45)))
+    return out.convert("RGBA")
+
+
+def hq_scene(src):
+    """Keep stairs, doors and annex intact; desert only where the render is empty."""
+    im = Image.open(src).convert("RGBA")
+    subject = im.resize((FRAME, FRAME), Image.LANCZOS)
+    subject = unsharp(subject)
+    subject = edge_darken(subject)
+
+    horizon = int(FRAME * 0.54)
+    canvas = Image.new("RGBA", (FRAME, FRAME), SKY + (255,))
+    canvas.paste(desert_fill((FRAME, FRAME - horizon)), (0, horizon))
+    canvas.paste(subject, (0, 0), subject)
+    return canvas
+
+
+def frame_unit(src, environment=None):
+    if environment == "hq":
+        return hq_scene(src)
+
     im = Image.open(src).convert("RGBA")
     im = crop_alpha(im)
     subject = fit(im, FRAME - 2 * MARGIN)
@@ -109,7 +149,7 @@ def main():
         src = SRC / f"{name}.png"
         if not src.is_file():
             raise SystemExit(f"missing render {src}")
-        sheet.paste(frame_unit(src), (i * FRAME, 0))
+        sheet.paste(frame_unit(src, environment=name if name == "hq" else None), (i * FRAME, 0))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(OUT)
     print(f"wrote {OUT} {sheet.size} frames={len(UNITS)} size={FRAME}")
