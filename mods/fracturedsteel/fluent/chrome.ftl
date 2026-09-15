@@ -47,3 +47,6 @@ button-replay-player-fast =
 button-replay-player-maximum =
     .tooltip = Maximum speed
     .label = MAX
+
+## ingame-player.yaml
+label-selection-empty = No unit selected

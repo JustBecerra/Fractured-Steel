@@ -43,6 +43,10 @@
 		Categories: Buildings
 	RenderSprites:
 	WithSpriteBody:
+	# Below unit priority (default 10) so a drag-box over mixed actors
+	# picks the army and leaves the building out. Clicking it still works.
+	Selectable:
+		Priority: 2
 	SelectionDecorations:
 		SelectionBoxColor: 00000000
 	WithSelectionRing:

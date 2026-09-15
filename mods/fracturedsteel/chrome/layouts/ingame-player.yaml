@@ -1,7 +1,81 @@
 Container@PLAYER_WIDGETS:
-	Logic: MenuButtonsChromeLogic, DeployHotkeyLogic
+	Logic: MenuButtonsChromeLogic, DeployHotkeyLogic, SelectionStripLogic
 	Children:
 		LogicKeyListener@DEPLOY_KEY_LISTENER:
 		LogicTicker@SIDEBAR_TICKER:
-		MenuButton@OPTIONS_BUTTON:
-			Key: escape
+		LogicTicker@SELECTION_TICKER:
+		# Bottom HUD: minimap + selection readout. Uses the dialog chrome we
+		# already ship. RA's command-bar / sidebar art is not in this mod.
+		Background@BOTTOM_BAR:
+			Y: WINDOW_HEIGHT - HEIGHT
+			Width: WINDOW_WIDTH
+			Height: 176
+			Children:
+				Background@RADAR_BG:
+					X: 8
+					Y: 8
+					Width: 160
+					Height: 160
+					Children:
+						Radar@INGAME_RADAR:
+							X: 5
+							Y: 5
+							Width: PARENT_WIDTH - 10
+							Height: PARENT_HEIGHT - 10
+							WorldInteractionController: INTERACTION_CONTROLLER
+				Background@PORTRAIT_BG:
+					X: 176
+					Y: 8
+					Width: 160
+					Height: 160
+					Children:
+						Image@SELECTION_PORTRAIT:
+							Width: 160
+							Height: 160
+							ImageCollection: portraits
+							ImageName: tank
+							Visible: false
+				SelectionPortraits@SELECTION_STRIP:
+					X: 176
+					Y: 48
+					Width: PARENT_WIDTH - 352
+					Height: 120
+					IconWidth: 56
+					IconHeight: 56
+					IconSpacing: 6
+					ImageCollection: portraits
+					Visible: false
+				Container@SELECTION_TEXT:
+					X: 352
+					Y: 16
+					Width: PARENT_WIDTH - 528
+					Height: 60
+					Children:
+						Label@SELECTION_EMPTY:
+							Width: PARENT_WIDTH
+							Height: 25
+							Font: Bold
+							Contrast: true
+							Text: label-selection-empty
+						Label@SELECTION_NAME:
+							Width: PARENT_WIDTH
+							Height: 25
+							Font: Title
+							Contrast: true
+							Visible: false
+						Label@SELECTION_DETAIL:
+							Y: 32
+							Width: PARENT_WIDTH
+							Height: 25
+							Font: Bold
+							Contrast: true
+							Visible: false
+				MenuButton@OPTIONS_BUTTON:
+					X: PARENT_WIDTH - WIDTH - 8
+					Y: 8
+					Width: 160
+					Height: 25
+					Text: button-observer-widgets-options
+					Font: Bold
+					Key: escape
+					DisableWorldSounds: true
