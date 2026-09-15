@@ -103,6 +103,10 @@ opposite. Tracked units use the `fstracked` locomotor, kept separate from the ho
 opening `worker.blend` and saving under a new name, so it inherits identical lights, world
 and render settings — which is why both units share a look and a pixel scale.
 
+`fs_hq` ("HQ") is an 8×8 round compound from `hq.blend`: a central drum with a front
+double door, circular skylight and roof antennas, surrounded by a lower ring of
+annexes joined by corridors and fortified with stacked sandbags and barbed wire.
+
 The ship currently has:
 
 - 8-facing rotation via `WithFacingSpriteBody`, driven by `sequences/assets/eship.png`.

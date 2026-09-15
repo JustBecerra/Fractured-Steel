@@ -124,6 +124,13 @@ render pass.
 `smoke.png` — 384×32, twelve 32×32 frames, one puff's life. Procedural, see
 `tools/make_smoke_sheet.py`.
 
+`hq.png` — 320×320, one isometric frame. Rendered from `hq.blend` at the same
+world-units-per-pixel as the units (`ortho_scale = 320 × WPP_FINAL`). A central
+drum (double door, circular skylight, roof antennas) sits on a wide terrace inside
+a lower ring of annexes joined by corridors, with stacked sandbags and barbed wire
+on the outer face. The entrance sector is left open. Buildings do not rotate, so
+there is only one facing.
+
 Frame index within a sequence is `start + facingInner * stride + frame`, where `stride`
 defaults to `Length`. So a multi-frame *animated* sequence per facing must be laid out
 facing-major, with `Length` and `Stride` set to the number of animation frames — and

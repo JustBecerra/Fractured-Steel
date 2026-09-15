@@ -24,6 +24,10 @@
 world:
 	Inherits: ^baseworld
 	PathFinder:
+	# Required by the Building trait. A dictionary of placed buildings; adds no
+	# gameplay on its own. World-only — must not go on ^baseworld or the editor
+	# will reject it.
+	BuildingInfluence:
 	# Hovercraft-style movement, used by the E-Ship.
 	Locomotor@fsvehicle:
 		Name: fsvehicle
@@ -46,8 +50,8 @@ world:
 	SpawnMapActors:
 	SpawnStartingUnits:
 	StartingUnits@Example:
-		BaseActor: fs_sentinel
-		SupportActors: fs_tank, fs_tank
+		BaseActor: fs_hq
+		SupportActors: fs_sentinel, fs_tank, fs_tank
 		Factions: example
 		ClassName: options-starting-units.unlabeled
 

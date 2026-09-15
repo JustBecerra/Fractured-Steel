@@ -18,6 +18,14 @@ tank:
 		Facings: -8
 		IgnoreWorldTint: true
 
+# Headquarters. Single isometric view: buildings do not rotate. Rendered from
+# hq.blend at the same world-units-per-pixel as the units. An 8-cell footprint
+# matches the terrace, annex ring and fortifications around the central drum.
+hq:
+	idle:
+		Filename: sequences/assets/hq.png
+		IgnoreWorldTint: true
+
 # Exhaust puff trailed from the tank's rear outlets while it moves. The puff is
 # the same from every angle, so one row of frames is enough. Each frame is a
 # later point in one puff's life; LeavesTrails plays it once per spawn.

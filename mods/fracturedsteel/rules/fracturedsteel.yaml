@@ -28,6 +28,28 @@
 		Cursor: default
 		BlockedCursor: default
 
+# Shared profile for structures. Deliberately does *not* inherit `example`:
+# that actor is a mobile-unit stub (Immobile, QuantizeFacingsFromSequence,
+# Actors category). Buildings occupy a footprint via Building, have a single
+# facing, and live in the Buildings editor category.
+^building:
+	AlwaysVisible:
+	BodyOrientation:
+		QuantizedFacings: 1
+	HitShape:
+	Building:
+		TerrainTypes: Clear
+	MapEditorData:
+		Categories: Buildings
+	RenderSprites:
+	WithSpriteBody:
+	SelectionDecorations:
+		SelectionBoxColor: 00000000
+	WithSelectionRing:
+		Image: selectring
+		Sequence: idle
+		Palette: greyscale
+
 fs_sentinel:
 	Inherits: example
 	-Immobile:
@@ -142,3 +164,18 @@ fs_tank:
 		Offsets: -444,116,0
 		MovingInterval: 4
 		VisibleThroughFog: true
+
+# Round headquarters with a front double door and a circular glass skylight.
+fs_hq:
+	Inherits: ^building
+	Building:
+		Footprint: xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx
+		Dimensions: 8,8
+	RenderSprites:
+		Image: hq
+	Tooltip:
+		Name: HQ
+	Health:
+		HP: 200000
+	Selectable:
+		Bounds: 220, 220
