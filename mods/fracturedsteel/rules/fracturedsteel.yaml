@@ -13,18 +13,17 @@
 		# Come to a stop and pivot to face the first waypoint before setting off,
 		# rather than steering while rolling.
 		TurnsWhileMoving: false
-		# Never follow a curved trajectory between cells. The engine recommends
-		# this for actors with a limited number of sprite facings, and we have 8:
-		# arcing between them reads as sliding rather than driving.
+		# Never follow a curved trajectory between cells. Tracked hulls pivot
+		# then drive straight; arcing between cells reads as sliding.
 		AlwaysTurnInPlace: true
 		# Deliberate and heavy, but not ponderous: stopping to pivot makes a slow
 		# turn rate feel worse than it looks on paper. The E-Ship turns at 30.
 		TurnSpeed: 18
 		Speed: 64
-		# Reverse straight out of short moves instead of making a three-point
-		# turn, the way a real tank would.
-		CanMoveBackward: true
-		MaxBackwardCells: 3
+		# Always pivot, then drive forward. Short reverse sounds right for a
+		# destination just behind the hull, but the engine treats any short
+		# move more than 90° off facing as reverse, so they back up constantly.
+		CanMoveBackward: false
 		Cursor: default
 		BlockedCursor: default
 

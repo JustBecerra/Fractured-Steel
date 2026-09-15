@@ -12,10 +12,11 @@ eship:
 
 # Tracked tank with a rear-mounted turret. Rendered from tank.blend through the
 # same camera and ortho_scale as eship, so both units share a pixel scale.
+# 32 facings so in-place pivots read as a turn instead of an 8-way snap.
 tank:
 	idle:
 		Filename: sequences/assets/tank.png
-		Facings: -8
+		Facings: -32
 		IgnoreWorldTint: true
 
 # Headquarters. Single isometric view: buildings do not rotate. Rendered from
