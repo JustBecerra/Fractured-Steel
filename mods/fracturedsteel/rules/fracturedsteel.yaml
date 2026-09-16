@@ -109,8 +109,10 @@ fs_sentinel:
 		Name: E-Ship
 	Health:
 		HP: 50000
+	# 1152 world units = 36px: 60% of the 60px sprite frame (40% smaller than
+	# the full-sheet mouse box, which overshot into empty padding).
 	Selectable:
-		Bounds: 48, 48
+		Bounds: 1152, 1152
 	# Keep SelectionDecorations for the health bar, but hide its corner-bracket
 	# box (transparent) so only the custom green ground ring shows.
 	SelectionDecorations:
@@ -138,7 +140,7 @@ fs_tank:
 	Health:
 		HP: 90000
 	Selectable:
-		Bounds: 48, 48
+		Bounds: 1152, 1152
 	SelectionDecorations:
 		SelectionBoxColor: 00000000
 	WithSelectionRing:
@@ -181,4 +183,6 @@ fs_hq:
 	Health:
 		HP: 200000
 	Selectable:
-		Bounds: 220, 220
+		# 164px box, shifted down so it covers the terrace and entrance
+		# (the sprite has empty sky in the top quarter).
+		Bounds: 5248, 5248, 0, 1632
