@@ -25,6 +25,8 @@ tank:
 hq:
 	idle:
 		Filename: sequences/assets/hq.png
+		Length: 3
+		Tick: 140
 		IgnoreWorldTint: true
 
 # Exhaust puff trailed from the tank's rear outlets while it moves. The puff is
