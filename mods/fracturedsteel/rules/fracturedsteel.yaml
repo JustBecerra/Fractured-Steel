@@ -166,6 +166,38 @@ fs_tank:
 		Offsets: -444,116,0
 		MovingInterval: 4
 		VisibleThroughFog: true
+	Targetable:
+		TargetTypes: Ground, GroundActor
+	Armor:
+		Type: Heavy
+	# Turret sheet is centred on the ring. 33 is 2 px ahead of -67
+	# (classic-fudge: 100 WU ≈ 2 px). Negative Z keeps it on the deck.
+	Turreted:
+		TurnSpeed: 28
+		Offset: 33,0,-80
+		RealignDelay: 40
+	AttackTurreted:
+	Armament:
+		Weapon: paladingun
+		Turret: primary
+		# Barrel tip is ~22 px from the ring. Classic-fudge needs ~1100 WU
+		# or the puff sits on the hull centre (654 was only ~13 px).
+		LocalOffset: 1100,0,0
+		Recoil: 120
+		RecoilRecovery: 12
+		MuzzleSequence: muzzle
+		MuzzlePalette: greyscale
+		Cursor: default
+		OutsideRangeCursor: attackoutsiderange
+	WithSpriteTurret:
+		Sequence: turret
+		Palette: greyscale
+		Recoils: true
+	WithMuzzleOverlay:
+	AutoTarget:
+	AutoTargetPriority@DEFAULT:
+		ValidTargets: Ground, GroundActor
+		ValidRelationships: Enemy
 
 # Vehicle Foundry gun vehicle. Uses the tank sheet; combat stats from the GDD.
 fs_paladin:
@@ -183,21 +215,6 @@ fs_paladin:
 		IconPalette: greyscale
 		Prerequisites: ~fs_vfoundry
 		Description: unit-paladin.description
-	Targetable:
-		TargetTypes: Ground, GroundActor
-	Armor:
-		Type: Heavy
-	AttackFrontal:
-		FacingTolerance: 512
-	Armament:
-		Weapon: paladingun
-		Cursor: default
-		OutsideRangeCursor: attackoutsiderange
-		MuzzlePalette: greyscale
-	AutoTarget:
-	AutoTargetPriority@DEFAULT:
-		ValidTargets: Ground, GroundActor
-		ValidRelationships: Enemy
 
 # Round headquarters with a front double door and a circular glass skylight.
 fs_hq:

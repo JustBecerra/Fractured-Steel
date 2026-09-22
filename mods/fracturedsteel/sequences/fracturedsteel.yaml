@@ -10,17 +10,23 @@ dozer:
 		Filename: sequences/assets/dozer.png
 		IgnoreWorldTint: true
 
-# Tracked tank with a rear-mounted turret. Rendered from tank.blend through the
-# same camera and ortho_scale as the dozer, so both units share a pixel scale.
-# 32 facings so in-place pivots read as a turn instead of an 8-way snap.
+# Tracked tank. Hull and turret are separate 32-facing rows so the gun can
+# track independently. Same camera and pixel scale as the dozer.
 tank:
+	Defaults:
+		Filename: sequences/assets/tank.png
+		IgnoreWorldTint: true
 	idle:
-		Filename: sequences/assets/tank.png
 		Facings: -32
-		IgnoreWorldTint: true
+	turret:
+		Start: 32
+		Facings: -32
 	icon:
-		Filename: sequences/assets/tank.png
-		IgnoreWorldTint: true
+		Filename: sequences/assets/tank-icon.png
+	muzzle:
+		Filename: sequences/assets/muzzle.png
+		Length: 8
+		Tick: 50
 
 # Headquarters. Single isometric view: buildings do not rotate. Rendered from
 # hq.blend at the same world-units-per-pixel as the units. An 8-cell footprint
@@ -62,6 +68,28 @@ selectring:
 	idle:
 		Filename: sequences/assets/ring.png
 		IgnoreWorldTint: true
+
+# Impact burst on the target. One sequence, no facings. CreateEffect warheads
+# play `piff` from image `explosion`.
+explosion:
+	piff:
+		Filename: sequences/assets/explosion.png
+		Length: 10
+		Tick: 40
+		IgnoreWorldTint: true
+
+# Paladin cannon sparks. idle is the star; left/right spray up-left / up-right.
+sparks:
+	Defaults:
+		Filename: sequences/assets/sparks.png
+		Length: 8
+		Tick: 35
+		IgnoreWorldTint: true
+	idle:
+	left:
+		Start: 8
+	right:
+		Start: 16
 
 # Scanner cone projected from the cabin while the unit is deployed to build.
 # Frames are centred on the same point as the eship frames, so the overlay

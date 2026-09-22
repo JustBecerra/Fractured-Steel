@@ -1,3 +1,10 @@
+^hitflash:
+	Warhead@2Eff: CreateEffect
+		Image: explosion
+		Explosions: piff
+		ExplosionPalette: greyscale
+		ValidTargets: Ground, GroundActor
+
 paladingun:
 	ReloadDelay: 25
 	Range: 6c0
@@ -7,8 +14,14 @@ paladingun:
 		Spread: 128
 		Damage: 2500
 		ValidTargets: GroundActor
+	Warhead@2Eff: CreateRandomEffect
+		Image: sparks
+		Explosions: idle, left, right
+		ExplosionPalette: greyscale
+		ValidTargets: Ground, GroundActor
 
 turretgun:
+	Inherits: ^hitflash
 	ReloadDelay: 25
 	Range: 6c0
 	ValidTargets: Ground, GroundActor
@@ -19,6 +32,7 @@ turretgun:
 		ValidTargets: GroundActor
 
 sword:
+	Inherits: ^hitflash
 	ReloadDelay: 30
 	Range: 1c512
 	ValidTargets: Ground, GroundActor
