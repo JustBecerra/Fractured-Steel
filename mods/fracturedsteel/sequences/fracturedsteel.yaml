@@ -104,19 +104,25 @@ scanner:
 		Tick: 100
 		IgnoreWorldTint: true
 
-# Alloy junkyard heaps. Three variants, each with 3 density frames (sparse
-# scatter → packed dump). ResourceRenderer picks a variant per cell and
-# lerps the frame from the cell's density.
+# Near-ground brown pad with a steel-strand mound on it. Three layouts,
+# 4 density frames. Rim lights are a separate blinking actor (junkpad).
 resources:
 	Defaults:
 		Filename: sequences/assets/alloy.png
-		Length: 3
+		Length: 4
 		IgnoreWorldTint: true
 	junk01:
 	junk02:
-		Start: 3
+		Start: 4
 	junk03:
-		Start: 6
+		Start: 8
+
+junkpad:
+	idle:
+		Filename: sequences/assets/junkpad.png
+		Length: 2
+		Tick: 500
+		IgnoreWorldTint: true
 
 clock:
 	idle:

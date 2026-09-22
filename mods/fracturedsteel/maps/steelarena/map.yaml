@@ -44,3 +44,9 @@ Actors:
 	Actor1: mpspawn
 		Owner: Multi1
 		Location: 24,24
+	Actor2: fs_junkpad
+		Owner: Neutral
+		Location: 18,12
+	Actor3: fs_junkpad
+		Owner: Neutral
+		Location: 20,27

@@ -90,10 +90,8 @@ player:
 		UnitQueues: Vehicle, Mech
 		UnitsToBuild:
 			fs_paladin: 70
-			fs_sentinel: 10
 			fs_frame: 20
 		UnitLimits:
-			fs_sentinel: 3
 			fs_frame: 4
 		ProductionMinCashRequirement: 400
 	SquadManagerBotModule:

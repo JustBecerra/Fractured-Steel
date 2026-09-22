@@ -24,7 +24,7 @@ dropdown-starting-units =
 
 ## World
 options-starting-units =
-    .unlabeled = Unlabeled
+    .hq = HQ
 
 ## ingame-observer.yaml
 label-mute-indicator = Audio Muted

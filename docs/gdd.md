@@ -36,26 +36,26 @@ HQ
 | HQ | 8×8 | — (starts placed) | — | 0 | Base, building/defense queues, build radius |
 | Reactor | 3×3 | 500 | 8 | **+80** | Power |
 | Processing Plant | 4×3 | 1500 | 16 | −30 | Alloy drop-off; spawns one dozer |
-| Vehicle Foundry | 4×4 | 2000 | 20 | −40 | Paladin, extra dozers |
+| Vehicle Foundry | 4×4 | 2000 | 20 | −40 | Paladin |
 | Defense Turret | 2×2 | 600 | 10 | −15 | Fixed gun |
 | Crew Academy | 5×4 | 1000 | 14 | −20 | Prerequisite for Mech Foundry |
 | Mech Foundry | 4×4 | 2500 | 24 | −50 | Prerequisite for Mech Assembly |
 | Mech Assembly | 5×5 | 3000 | 28 | −50 | Produces Frames; loadout UI |
 | Tech Lab | 3×3 | 2000 | 20 | −30 | End of this slice's tree |
 
-Starting cash: **5000**. Each junkyard dump: **30000** Alloy (6 cells × density 10 × 500 credits). Processing Plant storage: **20000**.
+Starting cash: **5000**. Each junkyard dump: **30000** Alloy (1 cell × density 60 × 500 credits). Processing Plant storage: **20000**.
 
 ## Units
 
 | Unit | Produced at | Cost | Time (sec) | HP | Speed | Role |
 | --- | --- | --- | --- | --- | --- | --- |
-| Tracked dozer | Processing Plant (free on place); Vehicle Foundry | 800 | 10 | 500 | 64 | Harvest Alloy from junkyards |
+| Tracked dozer | Processing Plant (free on place) | — | — | 500 | 64 | Harvest Alloy from junkyards |
 | Paladin | Vehicle Foundry | 900 | 12 | 900 | 64 | Tracked gun vehicle |
 | Frame | Mech Assembly | 2200 | 24 | 1200* | 48* | Modular mech |
 
 \*Frame HP/speed after Assault torso + Bipedal legs. See part catalog.
 
-Starting force: HQ, one dozer, two Paladins.
+Starting force: HQ. Extra dozers come from extra Processing Plants, not the Vehicle Foundry.
 
 ## Frame part catalog (initial)
 

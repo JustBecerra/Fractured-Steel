@@ -103,15 +103,6 @@ fs_sentinel:
 		TargetTypes: Ground, GroundActor
 	Valued:
 		Cost: 800
-	Buildable:
-		Queue: Vehicle
-		BuildPaletteOrder: 10
-		BuildDuration: 250
-		BuildDurationModifier: 100
-		Icon: icon
-		IconPalette: greyscale
-		Prerequisites: ~fs_vfoundry
-		Description: unit-dozer.description
 	Harvester:
 		Resources: Alloy
 		SearchFromProcRadius: 24
@@ -366,4 +357,19 @@ fs_frame:
 		Sequence: shield
 		Palette: greyscale
 		RequiresCondition: arm-shield
+
+# Rim lights for each junkyard. The pad itself is in the resource sprite
+# so scrap always sits on it; this actor is only the blink.
+fs_junkpad:
+	AlwaysVisible:
+	Immobile:
+		OccupiesSpace: false
+	RenderSprites:
+		Image: junkpad
+		Palette: greyscale
+	WithSpriteBody:
+	BodyOrientation:
+		QuantizedFacings: 1
+	MapEditorData:
+		Categories: System
 

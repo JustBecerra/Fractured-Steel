@@ -19,10 +19,10 @@ building-reactor =
     .description = Provides power.
 
 building-plant =
-    .description = Processes Alloy hauled from junkyards.
+    .description = Processes Alloy hauled from junkyards. Comes with a Bulldozer.
 
 building-vfoundry =
-    .description = Builds Paladins and dozers.
+    .description = Builds Paladins.
 
 building-turret =
     .description = Automated defense gun.

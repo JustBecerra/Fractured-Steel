@@ -1,156 +1,270 @@
-"""Gray/brown Alloy dump sprites for the resource layer.
+"""Junkyard sprites: a brown pad with blinking rim lights, steel-strand mounds on top.
 
 Run from the repository root:
 
     python3 tools/make_alloy_sheet.py
 
-Each sequence is one scrap-heap variant with 3 density frames (sparse scatter,
-then a proper pile, then a packed junkyard cell). Drawn as isometric crates,
-plates and barrels so a 2x3 dump reads as a junkyard rather than a flat stain.
+Writes two sheets:
+  alloy.png   — pad + mound (resource layer; scrap is painted on the pad)
+  junkpad.png — rim lights only, 2 frames (on / off) for the blink actor
+
+The pad is a near-ground brown plate. Lights are a separate actor so they
+can blink; painting the pad into the resource sheet keeps the scrap on top.
 """
+import math
+import random
+
 from PIL import Image, ImageDraw, ImageFilter, PngImagePlugin
 
-FRAME = 48
-DENSITY = 3
+FRAME = 288
+DENSITY = 4
 VARIANTS = 3
-SS = 4
-OUT = "mods/fracturedsteel/sequences/assets/alloy.png"
+SS = 2
+ALLOY_OUT = "mods/fracturedsteel/sequences/assets/alloy.png"
+PAD_OUT = "mods/fracturedsteel/sequences/assets/junkpad.png"
 
-# Weathered steel, rust, dirt — gray/brown as requested.
-STEEL = (118, 114, 110)
-STEEL_DK = (72, 68, 64)
-RUST = (132, 86, 48)
-RUST_DK = (86, 52, 28)
-DIRT = (96, 78, 52)
-DIRT_LT = (148, 118, 78)
-SHADOW = (28, 22, 16, 110)
+STEEL = (142, 138, 132)
+STEEL_DK = (78, 74, 70)
+STEEL_LT = (188, 184, 176)
+BROWN = (128, 86, 52)
+BROWN_DK = (82, 54, 32)
+BROWN_LT = (164, 118, 72)
+PAD_TOP = (118, 84, 52)
+PAD_SIDE = (72, 50, 32)
+PAD_EDGE = (56, 38, 24)
+SHADOW = (28, 20, 14, 150)
+LIGHT = (255, 252, 240)
+LIGHT_GLOW = (255, 236, 180, 160)
+SOCKET = (40, 32, 24)
 
-# Isometric cell diamond inscribed in the frame, matching OpenRA's rectangular
-# iso camera enough that a heap sits in the tile instead of floating on it.
 CX = FRAME * SS / 2
-CY = FRAME * SS / 2 + 6 * SS
-HALF_W = 20 * SS
-HALF_H = 10 * SS
+CY = FRAME * SS / 2 + 18 * SS
+HALF_W = 108 * SS
+HALF_H = 54 * SS
+# Almost ground level — a plate, not a box.
+PAD_H = 0.55
 
 
-def iso(x, y, z):
-    """Ground (x, y) plus height z, in supersampled pixels. +y is screen-down."""
-    sx = CX + (x - y) * (HALF_W / 16)
-    sy = CY + (x + y) * (HALF_H / 16) - z * SS
+def iso(x, y, z=0):
+    sx = CX + (x - y) * (HALF_W / 20)
+    sy = CY + (x + y) * (HALF_H / 20) - z * (HALF_H / 10)
     return sx, sy
 
 
-def box(draw, x, y, w, d, h, top, side_l, side_r):
-    """Isometric box with ground origin at (x, y), size (w, d, h)."""
-    p = {
-        "fl": iso(x, y, 0),
-        "fr": iso(x + w, y, 0),
-        "bl": iso(x, y + d, 0),
-        "br": iso(x + w, y + d, 0),
-        "ftl": iso(x, y, h),
-        "ftr": iso(x + w, y, h),
-        "btl": iso(x, y + d, h),
-        "btr": iso(x + w, y + d, h),
-    }
-    draw.polygon([p["ftl"], p["ftr"], p["br"], p["fr"]], fill=side_r)
-    draw.polygon([p["ftl"], p["btl"], p["bl"], p["fl"]], fill=side_l)
-    draw.polygon([p["ftl"], p["ftr"], p["btr"], p["btl"]], fill=top)
+# Screen-space centre of the deck. Mounds are authored around this, not CY.
+PAD_CX, PAD_CY = iso(10, 10, PAD_H)
 
 
-def barrel(draw, x, y, r, h, body, rim, band):
-    """Short isometric drum standing on the cell."""
-    top = iso(x, y, h)
-    bot = iso(x, y, 0)
-    rx, ry = r * SS * 0.9, r * SS * 0.45
-    draw.ellipse((bot[0] - rx, bot[1] - ry, bot[0] + rx, bot[1] + ry), fill=body)
-    draw.rectangle((bot[0] - rx, top[1], bot[0] + rx, bot[1]), fill=body)
-    draw.ellipse((top[0] - rx, top[1] - ry, top[0] + rx, top[1] + ry), fill=rim)
-    mid = iso(x, y, h * 0.45)
-    draw.ellipse((mid[0] - rx, mid[1] - ry * 0.85, mid[0] + rx, mid[1] + ry * 0.85), outline=band, width=max(1, SS // 2))
+def lerp(a, b, t):
+    return tuple(int(round(x + (y - x) * t)) for x, y in zip(a, b))
 
 
-# Per-variant piece lists: (kind, args...). kind is "box" or "barrel".
-# Positions are in the 0..16 cell space used by iso().
-LAYOUTS = [
+def pad_points():
+    """Iso diamond of the deck, inset slightly so lights sit on the rim."""
+    return [
+        iso(1, 1, PAD_H),
+        iso(19, 1, PAD_H),
+        iso(19, 19, PAD_H),
+        iso(1, 19, PAD_H),
+    ]
+
+
+def light_sites():
+    """Corners and edge midpoints of the deck."""
+    pts = [
+        (1, 1), (10, 1), (19, 1),
+        (19, 10), (19, 19),
+        (10, 19), (1, 19),
+        (1, 10),
+    ]
+    return [iso(x, y, PAD_H + 0.15) for x, y in pts]
+
+
+def draw_pad(draw):
+    """Near-ground brown plate. No lights — those are a separate overlay."""
+    top = [iso(0, 0, PAD_H), iso(20, 0, PAD_H), iso(20, 20, PAD_H), iso(0, 20, PAD_H)]
+    # Hairline edge so it reads as a slab, not a crate.
+    draw.polygon([iso(0, 0, PAD_H), iso(20, 0, PAD_H), iso(20, 0, 0), iso(0, 0, 0)], fill=PAD_EDGE)
+    draw.polygon([iso(20, 0, PAD_H), iso(20, 20, PAD_H), iso(20, 20, 0), iso(20, 0, 0)], fill=PAD_EDGE)
+    draw.polygon(top, fill=PAD_TOP)
+    inset = [
+        iso(0.4, 0.4, PAD_H + 0.05),
+        iso(19.6, 0.4, PAD_H + 0.05),
+        iso(19.6, 19.6, PAD_H + 0.05),
+        iso(0.4, 19.6, PAD_H + 0.05),
+    ]
+    draw.line(inset + [inset[0]], fill=PAD_EDGE, width=max(1, SS))
+
+    r_socket = 1.8 * SS
+    for p in light_sites():
+        draw.ellipse((p[0] - r_socket, p[1] - r_socket * 0.5, p[0] + r_socket, p[1] + r_socket * 0.5), fill=SOCKET)
+
+
+def draw_lights(draw, lights_on):
+    r_light = 1.55 * SS
+    for p in light_sites():
+        if lights_on:
+            glow = 4.0 * SS
+            draw.ellipse((p[0] - glow, p[1] - glow * 0.5, p[0] + glow, p[1] + glow * 0.5), fill=LIGHT_GLOW)
+            draw.ellipse((p[0] - r_light, p[1] - r_light * 0.5, p[0] + r_light, p[1] + r_light * 0.5), fill=LIGHT)
+
+
+def mound_height(x, y, peaks, t):
+    h = 0.0
+    for cx, cy, rx, ry, amp in peaks:
+        nx = (x - cx) / rx
+        ny = (y - cy) / ry
+        d2 = nx * nx + ny * ny
+        if d2 < 1.0:
+            h += amp * (1.0 - d2) ** 2
+    return h * t
+
+
+# Wider peaks, still centred on the pad so the pile stays on the deck.
+PEAKS = [
     [
-        ("box", (0, 1, 9, 7, 5), STEEL, STEEL_DK, RUST),
-        ("barrel", (11, 3, 4, 6), RUST, RUST_DK, STEEL_DK),
-        ("box", (5, 7, 8, 7, 4), DIRT_LT, DIRT, STEEL_DK),
-        ("box", (-1, 8, 7, 6, 3), STEEL, DIRT, STEEL_DK),
-        ("barrel", (13, 9, 3, 5), DIRT, RUST_DK, STEEL),
+        (PAD_CX, PAD_CY, 72 * SS, 36 * SS, 1.0),
+        (PAD_CX + 22 * SS, PAD_CY + 8 * SS, 48 * SS, 24 * SS, 0.8),
+        (PAD_CX - 20 * SS, PAD_CY + 6 * SS, 46 * SS, 22 * SS, 0.75),
+        (PAD_CX + 6 * SS, PAD_CY - 10 * SS, 40 * SS, 20 * SS, 0.6),
     ],
     [
-        ("barrel", (3, 2, 4, 7), STEEL, STEEL_DK, RUST),
-        ("box", (8, 1, 8, 7, 4), RUST, RUST_DK, DIRT),
-        ("box", (1, 8, 10, 6, 5), STEEL, STEEL_DK, DIRT_LT),
-        ("barrel", (12, 8, 4, 5), DIRT, DIRT_LT, STEEL_DK),
-        ("box", (6, 4, 6, 5, 3), RUST_DK, STEEL, DIRT),
+        (PAD_CX + 4 * SS, PAD_CY, 74 * SS, 35 * SS, 1.0),
+        (PAD_CX - 24 * SS, PAD_CY + 8 * SS, 46 * SS, 24 * SS, 0.75),
+        (PAD_CX + 24 * SS, PAD_CY + 10 * SS, 44 * SS, 22 * SS, 0.7),
+        (PAD_CX - 2 * SS, PAD_CY - 8 * SS, 38 * SS, 18 * SS, 0.55),
     ],
     [
-        ("box", (1, 0, 7, 8, 6), DIRT, DIRT_LT, STEEL_DK),
-        ("box", (8, 3, 8, 6, 4), STEEL, STEEL_DK, RUST_DK),
-        ("barrel", (2, 8, 4, 6), RUST, RUST_DK, STEEL),
-        ("box", (9, 9, 7, 6, 3), STEEL_DK, DIRT, RUST),
-        ("barrel", (7, 6, 3, 4), STEEL, RUST, STEEL_DK),
+        (PAD_CX - 2 * SS, PAD_CY + 2 * SS, 76 * SS, 36 * SS, 1.0),
+        (PAD_CX + 26 * SS, PAD_CY - 2 * SS, 44 * SS, 22 * SS, 0.7),
+        (PAD_CX - 26 * SS, PAD_CY + 8 * SS, 46 * SS, 22 * SS, 0.75),
+        (PAD_CX + 8 * SS, PAD_CY + 12 * SS, 38 * SS, 18 * SS, 0.55),
     ],
 ]
 
 
-def ground_shadow(draw, pieces, t):
-    """Soft blob under the heap, growing with density."""
-    rx = (14 + 6 * t) * SS
-    ry = (7 + 3 * t) * SS
-    draw.ellipse((CX - rx, CY - ry + 2 * SS, CX + rx, CY + ry + 2 * SS), fill=SHADOW)
+def draw_strands(draw, peaks, t, rng):
+    n = int(700 + 3200 * t)
+    colors = (STEEL, STEEL_DK, STEEL_LT, BROWN, BROWN_DK, BROWN_LT)
+    tries = 0
+    drawn = 0
+    while drawn < n and tries < n * 8:
+        tries += 1
+        x = rng.uniform(PAD_CX - 78 * SS, PAD_CX + 78 * SS)
+        y = rng.uniform(PAD_CY - 40 * SS, PAD_CY + 40 * SS)
+        h = mound_height(x, y, peaks, t)
+        if h < 0.06:
+            continue
+        angle = rng.choice((0.15, -0.15, 2.0, 2.2, 1.0, -1.0)) + rng.uniform(-0.25, 0.25)
+        length = (8 + h * 12) * SS
+        steps = 3
+        # Taller pile, still rooted on the plate.
+        lift = h * 32 * SS
+        pts = []
+        px, py = x, y
+        for i in range(steps):
+            a = angle + rng.uniform(-0.2, 0.2)
+            px += math.cos(a) * length / steps
+            py += math.sin(a) * length / steps * 0.5
+            pts.append((px, py - lift))
+        if len(pts) < 2:
+            continue
+        color = colors[rng.randrange(len(colors))]
+        width = 1 if h < 0.3 else max(1, int(round(SS * (0.6 + h))))
+        draw.line(pts, fill=color, width=width)
+        drawn += 1
 
 
-def draw_piece(draw, piece):
-    kind, args, *rest = piece
-    if kind == "box":
-        x, y, w, d, h = args
-        top, side_l, side_r = rest
-        box(draw, x, y, w, d, h, top, side_l, side_r)
-    else:
-        x, y, r, h = args
-        body, rim, band = rest
-        barrel(draw, x, y, r, h, body, rim, band)
+def draw_mound_shadow(peaks, t):
+    """Ground shadow in the mound's footprint, cast slightly down-right."""
+    size = FRAME * SS
+    sh = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    pix = sh.load()
+    # Shadow is drawn at (+ox, +oy) from the mound. Negative oy is screen-up,
+    # which is north / behind the pile on this camera.
+    ox, oy = 0, -26 * SS
+    step = 2
+    for y in range(0, size, step):
+        for x in range(0, size, step):
+            sx = PAD_CX + (x - ox - PAD_CX) * 0.78
+            sy = PAD_CY + (y - oy - PAD_CY) * 0.78
+            h = mound_height(sx, sy, peaks, t)
+            if h < 0.025:
+                continue
+            a = int(80 + 100 * min(1.0, h * 1.2))
+            for dy in range(step):
+                for dx in range(step):
+                    if x + dx < size and y + dy < size:
+                        pix[x + dx, y + dy] = (28, 20, 14, min(210, a))
+    return sh.filter(ImageFilter.GaussianBlur(2.6 * SS))
 
 
-def frame(variant, density):
-    """density 0..2: how much of the layout is showing, and how tall."""
+def draw_mound_blob(draw, peaks, t):
+    """Soft under-fill so the strands sit on a mass, not on air."""
+    size = FRAME * SS
+    blob = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    pix = blob.load()
+    step = 2
+    for y in range(0, size, step):
+        for x in range(0, size, step):
+            h = mound_height(x, y, peaks, t)
+            if h < 0.06:
+                continue
+            shade = lerp(BROWN_DK, STEEL, min(1.0, h))
+            a = int(40 + 90 * min(1.0, h))
+            yy = int(y - h * 28 * SS)
+            for dy in range(step):
+                for dx in range(step):
+                    if x + dx < size and 0 <= yy + dy < size:
+                        pix[x + dx, yy + dy] = shade + (a,)
+    return blob.filter(ImageFilter.GaussianBlur(1.2 * SS))
+
+
+def scrap_frame(variant, density):
+    rng = random.Random(100 + variant * 17 + density)
+    t = 0.28 + 0.72 * (density / (DENSITY - 1))
     size = FRAME * SS
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    peaks = PEAKS[variant]
+    img = Image.alpha_composite(img, draw_mound_shadow(peaks, t))
     draw = ImageDraw.Draw(img)
-    t = density / (DENSITY - 1)
-    pieces = LAYOUTS[variant]
-    n = max(1, int(round(1 + t * (len(pieces) - 1))))
-    ground_shadow(draw, pieces[:n], t)
-    for piece in pieces[:n]:
-        kind, args, *rest = piece
-        if kind == "box":
-            x, y, w, d, h = args
-            h = max(1, int(round(h * (0.45 + 0.55 * t))))
-            draw_piece(draw, ("box", (x, y, w, d, h), *rest))
-        else:
-            x, y, r, h = args
-            h = max(2, int(round(h * (0.5 + 0.5 * t))))
-            draw_piece(draw, ("barrel", (x, y, r, h), *rest))
-    img = img.filter(ImageFilter.GaussianBlur(0.4 * SS))
+    draw_pad(draw)
+    blob = draw_mound_blob(None, peaks, t)
+    img = Image.alpha_composite(img, blob)
+    draw = ImageDraw.Draw(img)
+    draw_strands(draw, peaks, t, rng)
+    draw_strands(draw, peaks, t * 0.35, rng)
+    img = img.filter(ImageFilter.GaussianBlur(0.2 * SS))
     return img.resize((FRAME, FRAME), Image.LANCZOS)
 
 
+def lights_frame(lights_on):
+    size = FRAME * SS
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    draw_lights(draw, lights_on)
+    img = img.filter(ImageFilter.GaussianBlur(0.15 * SS))
+    return img.resize((FRAME, FRAME), Image.LANCZOS)
+
+
+def save_sheet(path, frames, frame_w, frame_h):
+    sheet = Image.new("RGBA", (frame_w * len(frames), frame_h), (0, 0, 0, 0))
+    for i, im in enumerate(frames):
+        sheet.paste(im, (i * frame_w, 0), im)
+    meta = PngImagePlugin.PngInfo()
+    meta.add_text("FrameSize", f"{frame_w},{frame_h}")
+    meta.add_text("FrameAmount", str(len(frames)))
+    sheet.save(path, pnginfo=meta)
+    print(f"wrote {path} {sheet.size}")
+
+
 def main():
-    sheet = Image.new("RGBA", (FRAME * DENSITY * VARIANTS, FRAME), (0, 0, 0, 0))
-    i = 0
+    scraps = []
     for v in range(VARIANTS):
         for d in range(DENSITY):
-            im = frame(v, d)
-            sheet.paste(im, (i * FRAME, 0), im)
-            i += 1
-    meta = PngImagePlugin.PngInfo()
-    meta.add_text("FrameSize", f"{FRAME},{FRAME}")
-    meta.add_text("FrameAmount", str(DENSITY * VARIANTS))
-    sheet.save(OUT, pnginfo=meta)
-    print(f"wrote {OUT} {sheet.size} variants={VARIANTS} density={DENSITY}")
+            scraps.append(scrap_frame(v, d))
+    save_sheet(ALLOY_OUT, scraps, FRAME, FRAME)
+    save_sheet(PAD_OUT, [lights_frame(True), lights_frame(False)], FRAME, FRAME)
 
 
 if __name__ == "__main__":

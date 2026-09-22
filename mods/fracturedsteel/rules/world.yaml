@@ -43,14 +43,14 @@ world:
 			Clear: 100
 			Alloy: 70
 	# Alloy is a map resource (junkyards). ResourceIndex 1 is stored per cell
-	# in map.bin. 6 cells × MaxDensity 10 × 500 credits = 30000 per dump.
+	# in map.bin. One cell × MaxDensity 60 × 500 credits = 30000 per dump.
 	ResourceLayer:
 		ResourceTypes:
 			Alloy:
 				ResourceIndex: 1
 				TerrainType: Alloy
 				AllowedTerrainTypes: Clear
-				MaxDensity: 10
+				MaxDensity: 60
 	ResourceRenderer:
 		ResourceTypes:
 			Alloy:
@@ -74,9 +74,8 @@ world:
 	SpawnStartingUnits:
 	StartingUnits@Example:
 		BaseActor: fs_hq
-		SupportActors: fs_sentinel, fs_paladin, fs_paladin
 		Factions: example
-		ClassName: options-starting-units.unlabeled
+		ClassName: options-starting-units.hq
 	ProductionQueueFromSelection:
 		ProductionPaletteWidget: PRODUCTION_PALETTE
 
@@ -91,7 +90,7 @@ editorworld:
 				ResourceIndex: 1
 				TerrainType: Alloy
 				AllowedTerrainTypes: Clear
-				MaxDensity: 10
+				MaxDensity: 60
 	ResourceRenderer:
 		ResourceTypes:
 			Alloy:
