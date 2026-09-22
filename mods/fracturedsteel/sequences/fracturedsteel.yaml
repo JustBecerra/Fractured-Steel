@@ -1,17 +1,14 @@
-eship:
-	# Frames 0-7: thrusters off. Frames 8-15: thrusters firing.
+# T-330-inspired crawler dozer: forward cab, front blade, rear ripper.
+# Same camera and world-units-per-pixel as the tank. 32 facings so in-place
+# pivots read as a turn instead of an 8-way snap.
+dozer:
 	idle:
-		Filename: sequences/assets/eship.png
-		Facings: -8
-		IgnoreWorldTint: true
-	move:
-		Filename: sequences/assets/eship.png
-		Start: 8
-		Facings: -8
+		Filename: sequences/assets/dozer.png
+		Facings: -32
 		IgnoreWorldTint: true
 
 # Tracked tank with a rear-mounted turret. Rendered from tank.blend through the
-# same camera and ortho_scale as eship, so both units share a pixel scale.
+# same camera and ortho_scale as the dozer, so both units share a pixel scale.
 # 32 facings so in-place pivots read as a turn instead of an 8-way snap.
 tank:
 	idle:
@@ -25,6 +22,15 @@ tank:
 hq:
 	idle:
 		Filename: sequences/assets/hq.png
+		Length: 3
+		Tick: 140
+		IgnoreWorldTint: true
+
+# Crew Academy. Two front-facing barracks, ground flag, hedge rectangle.
+# Same camera angle and pixel scale as the HQ. Three idle frames for the flag.
+academy:
+	idle:
+		Filename: sequences/assets/academy.png
 		Length: 3
 		Tick: 140
 		IgnoreWorldTint: true

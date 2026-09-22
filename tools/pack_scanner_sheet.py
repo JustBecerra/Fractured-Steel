@@ -10,6 +10,8 @@ DefaultSpriteSequence resolves a frame as `facingInner * stride + frame`, with
 stride defaulting to Length, so the sheet must be facing-major: one row per
 facing, one column per sweep step.
 """
+from pathlib import Path
+
 from PIL import Image, ImageFilter, PngImagePlugin
 
 SRC = "art/placeholders/scanner/f%d_%d.png"
@@ -46,14 +48,18 @@ meta.add_text("FrameAmount", str(FACINGS * STEPS))
 sheet.save(OUT, pnginfo=meta)
 print("wrote", OUT, sheet.size, "frames:", FACINGS * STEPS)
 
-# Preview: one facing across the whole sweep, with the ship underneath, so the
-# vertical travel of the beam is visible.
-ship = Image.open("mods/fracturedsteel/sequences/assets/eship.png").convert("RGBA")
+# Preview: one facing across the whole sweep.
 PREV_FACING = 2
 prev = Image.new("RGBA", (F * STEPS, F), (34, 40, 34, 255))
+dozer = Path("mods/fracturedsteel/sequences/assets/dozer.png")
+unit = None
+if dozer.is_file():
+    unit = Image.open(dozer).convert("RGBA")
 for step in range(STEPS):
-    prev.alpha_composite(ship.crop((PREV_FACING * 60, 0, PREV_FACING * 60 + 60, 60)),
-                         (step * F + (F - 60) // 2, (F - 60) // 2))
+    if unit is not None:
+        prev.alpha_composite(
+            unit.crop((PREV_FACING * 60, 0, PREV_FACING * 60 + 60, 60)),
+            (step * F + (F - 60) // 2, (F - 60) // 2))
     prev.alpha_composite(load(PREV_FACING, step), (step * F, 0))
 prev.resize((F * STEPS * 2, F * 2), Image.NEAREST).save(
     "art/placeholders/_scanner_sweep.png")

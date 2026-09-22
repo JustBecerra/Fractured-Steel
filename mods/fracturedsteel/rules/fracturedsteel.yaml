@@ -4,9 +4,7 @@
 
 # Shared movement profile for tracked vehicles. Tracks steer by driving one
 # track against the other, so they pivot on the spot and then drive in straight
-# lines — quite unlike the hovering E-Ship, which banks smoothly through its
-# turns without slowing down. Inherit this from every tracked unit so they all
-# handle the same way.
+# lines. Inherit this from every tracked unit so they all handle the same way.
 ^tracked:
 	Mobile:
 		Locomotor: fstracked
@@ -17,7 +15,7 @@
 		# then drive straight; arcing between cells reads as sliding.
 		AlwaysTurnInPlace: true
 		# Deliberate and heavy, but not ponderous: stopping to pivot makes a slow
-		# turn rate feel worse than it looks on paper. The E-Ship turns at 30.
+		# turn rate feel worse than it looks on paper.
 		TurnSpeed: 18
 		Speed: 64
 		# Always pivot, then drive forward. Short reverse sounds right for a
@@ -55,58 +53,14 @@
 
 fs_sentinel:
 	Inherits: example
+	Inherits@TRACKED: ^tracked
 	-Immobile:
 	-WithSpriteBody:
 	WithFacingSpriteBody:
-	# Hovering movement: steers while under way and banks through turns without
-	# stopping. Deliberately the opposite of ^tracked.
-	Mobile:
-		Locomotor: fsvehicle
-		Speed: 85
-		TurnSpeed: 30
-		TurnsWhileMoving: true
-		Cursor: default
-		BlockedCursor: default
 	RenderSprites:
-		Image: eship
-	# Swap to the thrusters-firing frames while moving.
-	WithMoveAnimation:
-		MoveSequence: move
-	GrantConditionOnMovement@MOVING:
-		Condition: moving
-		ValidMovementTypes: Horizontal
-	# Deploying puts the unit into its "building" state. This is a stand-in for
-	# the real worker-builds-buildings mechanic, which does not exist yet.
-	GrantConditionOnDeploy:
-		DeployedCondition: building
-		DeployCursor: default
-		DeployBlockedCursor: default
-		UndeployOnMove: true
-		SkipMakeAnimation: true
-	# Scanner cone projected from the cabin while building.
-	WithIdleOverlay@SCANNER:
-		Image: scanner
-		Sequence: idle
-		RequiresCondition: building
-	# Custom trait (OpenRA.Mods.Example): real light cast on the terrain under
-	# the far end of the cone, about one and a half cells ahead of the cabin.
-	ConditionalTerrainLightSource@SCANNER:
-		RequiresCondition: building
-		Range: 1c768
-		Intensity: 0.15
-		RedTint: 0.02
-		GreenTint: 0.25
-		BlueTint: 0.45
-		Offset: 1c500,0,0
-	# Subtle idle hover bob. Held steady while moving or scanning.
-	Hovers:
-		RequiresCondition: !moving && !building
-		BobDistance: -48
-		InitialHeight: 48
-		Ticks: 14
-		RiseTicks: 14
+		Image: dozer
 	Tooltip:
-		Name: E-Ship
+		Name: Bulldozer
 	Health:
 		HP: 50000
 	# 1152 world units = 36px: 60% of the 60px sprite frame (40% smaller than
@@ -125,8 +79,6 @@ fs_sentinel:
 		Palette: greyscale
 
 # Tracked tank, turret mounted at the rear over a front engine deck.
-# Slower and heavier than the hovering E-Ship, and it does not bob.
-# Movement comes from ^tracked, so it pivots in place instead of gliding.
 fs_tank:
 	Inherits: example
 	Inherits@TRACKED: ^tracked
@@ -186,3 +138,20 @@ fs_hq:
 		# 164px box, shifted down so it covers the terrace and entrance
 		# (the sprite has empty sky in the top quarter).
 		Bounds: 5248, 5248, 0, 1632
+
+# Two front-facing barracks with a roof flag on the left chimney
+# and a rectangular hedge. Doors point +X, same as the HQ entrance.
+fs_academy:
+	Inherits: ^building
+	Building:
+		Footprint: xxxxx xxxxx xxxxx xxxxx
+		Dimensions: 5,4
+	RenderSprites:
+		Image: academy
+	Tooltip:
+		Name: Crew Academy
+	Health:
+		HP: 80000
+	Selectable:
+		# ~108x90px over the pair of barracks and the hedge.
+		Bounds: 3456, 2880

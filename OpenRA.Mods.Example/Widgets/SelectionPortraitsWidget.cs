@@ -25,7 +25,8 @@ namespace OpenRA.Mods.Example.Widgets
 		{
 			["fs_tank"] = "tank",
 			["fs_sentinel"] = "eship",
-			["fs_hq"] = "hq"
+			["fs_hq"] = "hq",
+			["fs_academy"] = "academy"
 		};
 
 		readonly World world;

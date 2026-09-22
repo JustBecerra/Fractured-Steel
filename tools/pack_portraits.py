@@ -24,7 +24,7 @@ MARGIN = 14
 SHADOW_OFFSET = (5, 7)
 SHADOW_BLUR = 9
 SHADOW_ALPHA = 110
-UNITS = ("tank", "eship", "hq")
+UNITS = ("tank", "eship", "hq", "academy")
 
 SKY = (176, 214, 238)
 SAND = (201, 168, 112)
@@ -180,7 +180,7 @@ def tank_scene(src):
 def frame_unit(src, environment=None):
     if environment == "hq":
         return hq_scene(src)
-    if environment == "tank":
+    if environment in ("tank", "eship", "academy"):
         return tank_scene(src)
 
     im = Image.open(src).convert("RGBA")
@@ -220,7 +220,7 @@ def main():
         src = SRC / f"{name}.png"
         if not src.is_file():
             raise SystemExit(f"missing render {src}")
-        sheet.paste(frame_unit(src, environment=name if name in ("hq", "tank") else None), (i * FRAME, 0))
+        sheet.paste(frame_unit(src, environment=name if name in ("hq", "tank", "eship", "academy") else None), (i * FRAME, 0))
     OUT.parent.mkdir(parents=True, exist_ok=True)
     sheet.save(OUT)
     print(f"wrote {OUT} {sheet.size} frames={len(UNITS)} size={FRAME}")

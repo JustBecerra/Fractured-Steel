@@ -82,47 +82,41 @@ access, as does `git push`. Both fail with DNS errors under a restricted sandbox
 Two units exist, both in `mods/fracturedsteel/rules/fracturedsteel.yaml` and both rendered
 from our own Blender models (kept in `~/Desktop/FracturedSteel-assets/`, outside this repo).
 
-`fs_sentinel` ("E-Ship") is a hovering scout from `worker.blend`. **Caveat:** the saved
-`worker.blend` is the original pre-thruster state — it has no `Pivot` or `RCam` and no
-thruster geometry, because those were added in a live Blender session that was never
-saved. The committed sprites are fine, but re-rendering the ship means rebuilding that rig
-first (see `docs/asset-pipeline.md` for the camera values).
+`fs_sentinel` ("Bulldozer") is a T-330-inspired crawler from `dozer.blend`: forward
+cab over a front blade, rear engine deck, and a raised single-shank ripper. It
+inherits `^tracked` like the tank (32 facings, pivot in place, no hover). `dozer.blend`
+was copied from `tank.blend`, so lights, world and `RCam` match — same pixel scale.
 
 `fs_tank` ("Tank") is a tracked vehicle from `tank.blend`, with the turret mounted at the
 rear over a front engine deck, Merkava/TAM style, and a pintle-mounted FM MAG on the turret
-roof. It is slower and heavier than the ship and does not hover. It trails exhaust smoke
-from two rear outlets while moving, via two `LeavesTrails` traits.
+roof. It trails exhaust smoke from two rear outlets while moving, via two `LeavesTrails`
+traits.
 
 Its movement comes from the **`^tracked`** template, which every tracked vehicle should
 inherit so they all handle alike: pivot in place before setting off
 (`TurnsWhileMoving: false`), never arc between cells (`AlwaysTurnInPlace: true`, which the
 engine recommends for actors with few sprite facings), a slow turn rate, and reversing out
-of short moves rather than three-point turning. The hovering ship deliberately does the
-opposite. Tracked units use the `fstracked` locomotor, kept separate from the hover
-`fsvehicle` so terrain handling and crushing can diverge later. `tank.blend` was made by
-opening `worker.blend` and saving under a new name, so it inherits identical lights, world
-and render settings — which is why both units share a look and a pixel scale.
+of short moves rather than three-point turning. Tracked units use the `fstracked`
+locomotor, kept separate from the unused hover `fsvehicle` so terrain handling and
+crushing can diverge later. `tank.blend` was made by opening `worker.blend` and saving
+under a new name, so it inherits identical lights, world and render settings — which is
+why the tank and dozer share a look and a pixel scale.
 
 `fs_hq` ("HQ") is an 8×8 round compound from `hq.blend`: a central drum with a front
 double door, circular skylight and roof antennas, surrounded by a lower ring of
 annexes joined by corridors and fortified with stacked sandbags and barbed wire.
 
-The ship currently has:
+`fs_academy` ("Crew Academy") is two front-facing barracks from `academy.blend`, with a
+flag on the left barrack chimney (same 3-frame wind loop as the HQ) and a
+rectangular hedge. Doors face +X like the HQ.
 
-- 8-facing rotation via `WithFacingSpriteBody`, driven by `sequences/assets/eship.png`.
-- Movement (`Mobile` + `fsvehicle` locomotor + `PathFinder`, both wired up in
-  `rules/world.yaml`), turning while moving so orders feel responsive.
-- Rear thrusters that light up with blue exhaust only while moving (`WithMoveAnimation`
-  swapping to the `move` sequence).
-- A subtle idle hover bob (`Hovers`), disabled while moving via
-  `GrantConditionOnMovement`.
+The dozer currently has:
+
+- 32-facing rotation via `WithFacingSpriteBody`, driven by `sequences/assets/dozer.png`.
+- Tracked movement from `^tracked` (`fstracked` locomotor + `PathFinder` in
+  `rules/world.yaml`): it pivots in place, then drives forward.
 - A green ground selection ring drawn *beneath* the unit by our custom
   `WithSelectionRing` trait.
-- A scanner cone projected from the cabin while deployed, combining a
-  `WithIdleOverlay` sprite with a real terrain light from our custom
-  `ConditionalTerrainLightSource` trait. Deploying (right-click the selected
-  unit) is a **placeholder trigger** standing in for the real
-  worker-builds-buildings mechanic, which does not exist yet.
 
 The stock SDK `example` actor and its assets still exist and are inherited from; they are
 template leftovers, not final design.

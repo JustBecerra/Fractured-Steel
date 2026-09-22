@@ -28,15 +28,14 @@ world:
 	# gameplay on its own. World-only — must not go on ^baseworld or the editor
 	# will reject it.
 	BuildingInfluence:
-	# Hovercraft-style movement, used by the E-Ship.
+	# Unused hover locomotor kept so later hover units can share it.
 	Locomotor@fsvehicle:
 		Name: fsvehicle
 		TerrainSpeeds:
 			Clear: 100
 	# Tracked vehicles get their own locomotor so their terrain handling can
-	# diverge from the hovering one later: rough ground should slow tracks down,
-	# and tracks are where crushing belongs. Identical for now, since Clear is
-	# the only terrain type that exists.
+	# diverge later: rough ground should slow tracks down, and tracks are where
+	# crushing belongs. Identical for now, since Clear is the only terrain type.
 	Locomotor@fstracked:
 		Name: fstracked
 		TerrainSpeeds:

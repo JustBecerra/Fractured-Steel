@@ -392,10 +392,11 @@ editor:
 
 # Close-up 3/4 portraits for the bottom-bar selection panel.
 # Packed by tools/pack_portraits.py from art/placeholders/portraits/.
-# The PNG is 512x256 (power-of-two); frames sit in the top-left.
+# The PNG is 1024x256 (power-of-two); frames sit in the top-left.
 portraits:
 	Image: chrome/assets/portraits.png
 	Regions:
 		tank: 0, 0, 160, 160
 		eship: 160, 0, 160, 160
 		hq: 320, 0, 160, 160
+		academy: 480, 0, 160, 160
