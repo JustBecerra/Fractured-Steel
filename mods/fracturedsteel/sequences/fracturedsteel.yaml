@@ -6,6 +6,9 @@ dozer:
 		Filename: sequences/assets/dozer.png
 		Facings: -32
 		IgnoreWorldTint: true
+	icon:
+		Filename: sequences/assets/dozer.png
+		IgnoreWorldTint: true
 
 # Tracked tank with a rear-mounted turret. Rendered from tank.blend through the
 # same camera and ortho_scale as the dozer, so both units share a pixel scale.
@@ -14,6 +17,9 @@ tank:
 	idle:
 		Filename: sequences/assets/tank.png
 		Facings: -32
+		IgnoreWorldTint: true
+	icon:
+		Filename: sequences/assets/tank.png
 		IgnoreWorldTint: true
 
 # Headquarters. Single isometric view: buildings do not rotate. Rendered from
@@ -25,6 +31,9 @@ hq:
 		Length: 3
 		Tick: 140
 		IgnoreWorldTint: true
+	icon:
+		Filename: sequences/assets/hq.png
+		IgnoreWorldTint: true
 
 # Crew Academy. Two front-facing barracks, ground flag, hedge rectangle.
 # Same camera angle and pixel scale as the HQ. Three idle frames for the flag.
@@ -33,6 +42,9 @@ academy:
 		Filename: sequences/assets/academy.png
 		Length: 3
 		Tick: 140
+		IgnoreWorldTint: true
+	icon:
+		Filename: sequences/assets/academy.png
 		IgnoreWorldTint: true
 
 # Exhaust puff trailed from the tank's rear outlets while it moves. The puff is
@@ -63,3 +75,95 @@ scanner:
 		Facings: -8
 		Tick: 100
 		IgnoreWorldTint: true
+
+# Alloy junkyard heaps. Three variants, each with 3 density frames (sparse
+# scatter → packed dump). ResourceRenderer picks a variant per cell and
+# lerps the frame from the cell's density.
+resources:
+	Defaults:
+		Filename: sequences/assets/alloy.png
+		Length: 3
+		IgnoreWorldTint: true
+	junk01:
+	junk02:
+		Start: 3
+	junk03:
+		Start: 6
+
+clock:
+	idle:
+		Filename: sequences/assets/clock.png
+		Length: 15
+		IgnoreWorldTint: true
+
+reactor:
+	Defaults:
+		Filename: sequences/assets/reactor.png
+		IgnoreWorldTint: true
+	idle:
+	icon:
+
+plant:
+	Defaults:
+		Filename: sequences/assets/plant.png
+		IgnoreWorldTint: true
+	idle:
+	icon:
+
+vfoundry:
+	Defaults:
+		Filename: sequences/assets/vfoundry.png
+		IgnoreWorldTint: true
+	idle:
+	icon:
+
+turret:
+	Defaults:
+		Filename: sequences/assets/turret.png
+		IgnoreWorldTint: true
+	idle:
+	icon:
+
+mfoundry:
+	Defaults:
+		Filename: sequences/assets/mfoundry.png
+		IgnoreWorldTint: true
+	idle:
+	icon:
+
+assembly:
+	Defaults:
+		Filename: sequences/assets/assembly.png
+		IgnoreWorldTint: true
+	idle:
+	icon:
+
+techlab:
+	Defaults:
+		Filename: sequences/assets/techlab.png
+		IgnoreWorldTint: true
+	idle:
+	icon:
+
+# Layered Frame: legs (idle), assault torso, sword, shield. Packed facing-major.
+# Facings stay on the body layers, not Defaults: the production icon is a
+# single frame and must not inherit the 32-facing stride.
+frame:
+	Defaults:
+		Filename: sequences/assets/frame.png
+		IgnoreWorldTint: true
+	idle:
+		Facings: -32
+	torso:
+		Start: 32
+		Facings: -32
+	sword:
+		Start: 64
+		Facings: -32
+	shield:
+		Start: 96
+		Facings: -32
+	icon:
+		Filename: sequences/assets/frame-icon.png
+
+

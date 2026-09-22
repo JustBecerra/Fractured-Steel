@@ -50,6 +50,28 @@
 		Image: selectring
 		Sequence: idle
 		Palette: greyscale
+	SequencePlaceBuildingPreview:
+		Palette: greyscale
+	Targetable:
+		TargetTypes: Ground, GroundActor
+	Armor:
+		Type: Heavy
+	Voiced:
+		VoiceSet: fsvoice
+	MustBeDestroyed:
+
+# Buildings the player places after the HQ. Hidden until an HQ provides `structures`.
+^constructed:
+	Inherits: ^building
+	RequiresBuildableArea:
+		AreaTypes: building
+		Adjacent: 3
+	Buildable:
+		Queue: Building
+		Icon: icon
+		IconPalette: greyscale
+		BuildDurationModifier: 100
+		Prerequisites: ~structures
 
 fs_sentinel:
 	Inherits: example
@@ -77,6 +99,29 @@ fs_sentinel:
 		Image: selectring
 		Sequence: idle
 		Palette: greyscale
+	Targetable:
+		TargetTypes: Ground, GroundActor
+	Valued:
+		Cost: 800
+	Buildable:
+		Queue: Vehicle
+		BuildPaletteOrder: 10
+		BuildDuration: 250
+		BuildDurationModifier: 100
+		Icon: icon
+		IconPalette: greyscale
+		Prerequisites: ~fs_vfoundry
+		Description: unit-dozer.description
+	Harvester:
+		Resources: Alloy
+		SearchFromProcRadius: 24
+		HarvestCursor: harvest
+	StoresResources:
+		Capacity: 20
+		Resources: Alloy
+	DockClientManager:
+		EnterCursor: enter
+		EnterBlockedCursor: enter-blocked
 
 # Tracked tank, turret mounted at the rear over a front engine deck.
 fs_tank:
@@ -122,6 +167,38 @@ fs_tank:
 		MovingInterval: 4
 		VisibleThroughFog: true
 
+# Vehicle Foundry gun vehicle. Uses the tank sheet; combat stats from the GDD.
+fs_paladin:
+	Inherits: fs_tank
+	Tooltip:
+		Name: Paladin
+	Valued:
+		Cost: 900
+	Buildable:
+		Queue: Vehicle
+		BuildPaletteOrder: 20
+		BuildDuration: 300
+		BuildDurationModifier: 100
+		Icon: icon
+		IconPalette: greyscale
+		Prerequisites: ~fs_vfoundry
+		Description: unit-paladin.description
+	Targetable:
+		TargetTypes: Ground, GroundActor
+	Armor:
+		Type: Heavy
+	AttackFrontal:
+		FacingTolerance: 512
+	Armament:
+		Weapon: paladingun
+		Cursor: default
+		OutsideRangeCursor: attackoutsiderange
+		MuzzlePalette: greyscale
+	AutoTarget:
+	AutoTargetPriority@DEFAULT:
+		ValidTargets: Ground, GroundActor
+		ValidRelationships: Enemy
+
 # Round headquarters with a front double door and a circular glass skylight.
 fs_hq:
 	Inherits: ^building
@@ -138,11 +215,26 @@ fs_hq:
 		# 164px box, shifted down so it covers the terrace and entrance
 		# (the sprite has empty sky in the top quarter).
 		Bounds: 5248, 5248, 0, 1632
+	ProvidesPrerequisite:
+		Prerequisite: structures
+	BaseBuilding:
+	GivesBuildableArea:
+		AreaTypes: building
+	BaseProvider:
+		Range: 16c0
+	Production:
+		Produces: Building, Defense
+	PrimaryBuilding:
+		Cursor: default
+	Power:
+		Amount: 0
+	MustBeDestroyed:
+		RequiredForShortGame: true
 
 # Two front-facing barracks with a roof flag on the left chimney
 # and a rectangular hedge. Doors point +X, same as the HQ entrance.
 fs_academy:
-	Inherits: ^building
+	Inherits: ^constructed
 	Building:
 		Footprint: xxxxx xxxxx xxxxx xxxxx
 		Dimensions: 5,4
@@ -155,3 +247,106 @@ fs_academy:
 	Selectable:
 		# ~108x90px over the pair of barracks and the hedge.
 		Bounds: 3456, 2880
+	Valued:
+		Cost: 1000
+	Buildable:
+		BuildPaletteOrder: 40
+		BuildDuration: 350
+		Prerequisites: ~structures, fs_plant
+		Description: building-academy.description
+	Power:
+		Amount: -20
+	ProvidesPrerequisite:
+		Prerequisite: fs_academy
+
+# Modular Frame. Parts are conditions; AssemblyBay / GrantExternalConditionToProduced
+# grant the loadout. GrantCondition covers editor-placed Frames.
+fs_frame:
+	Inherits: example
+	Inherits@TRACKED: ^tracked
+	-Immobile:
+	-WithSpriteBody:
+	WithFacingSpriteBody:
+	Mobile:
+		Speed: 48
+	RenderSprites:
+		Image: frame
+	Tooltip:
+		Name: Frame
+	Health:
+		HP: 120000
+	Selectable:
+		Bounds: 1920, 1920
+	SelectionDecorations:
+		SelectionBoxColor: 00000000
+	WithSelectionRing:
+		Image: selectring
+		Sequence: idle
+		Palette: greyscale
+	Valued:
+		Cost: 2200
+	Buildable:
+		Queue: Mech
+		BuildPaletteOrder: 10
+		BuildDuration: 600
+		BuildDurationModifier: 100
+		Icon: icon
+		IconPalette: greyscale
+		Prerequisites: ~fs_assembly
+		Description: unit-frame.description
+	Targetable:
+		TargetTypes: Ground, GroundActor
+	ExternalCondition@TORSOASSAULT:
+		Condition: torso-assault
+	ExternalCondition@LEGSBIPEDAL:
+		Condition: legs-bipedal
+	ExternalCondition@ARMSWORD:
+		Condition: arm-sword
+	ExternalCondition@ARMSHIELD:
+		Condition: arm-shield
+	GrantCondition@TORSO:
+		Condition: torso-assault
+	GrantCondition@LEGS:
+		Condition: legs-bipedal
+	GrantCondition@SWORD:
+		Condition: arm-sword
+	GrantCondition@SHIELD:
+		Condition: arm-shield
+	Armor:
+		Type: Heavy
+		RequiresCondition: torso-assault
+	SpeedMultiplier@BIPEDAL:
+		RequiresCondition: legs-bipedal
+		Modifier: 100
+	DamageMultiplier@SHIELD:
+		RequiresCondition: arm-shield
+		Modifier: 80
+	AttackFrontal:
+		FacingTolerance: 160
+	Armament@LEFT:
+		Name: primary
+		Weapon: sword
+		Cursor: default
+		OutsideRangeCursor: attackoutsiderange
+		MuzzlePalette: greyscale
+		RequiresCondition: arm-sword
+	AutoTarget:
+	AutoTargetPriority@DEFAULT:
+		ValidTargets: Ground, GroundActor
+		ValidRelationships: Enemy
+	WithIdleOverlay@TORSO:
+		Image: frame
+		Sequence: torso
+		Palette: greyscale
+		RequiresCondition: torso-assault
+	WithIdleOverlay@SWORD:
+		Image: frame
+		Sequence: sword
+		Palette: greyscale
+		RequiresCondition: arm-sword
+	WithIdleOverlay@SHIELD:
+		Image: frame
+		Sequence: shield
+		Palette: greyscale
+		RequiresCondition: arm-shield
+

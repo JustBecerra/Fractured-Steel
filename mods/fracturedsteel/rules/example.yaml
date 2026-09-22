@@ -8,6 +8,8 @@ example:
 	QuantizeFacingsFromSequence:
 	RenderSprites:
 	WithSpriteBody:
+	Voiced:
+		VoiceSet: fsvoice
 
 example.colorpicker:
 	Inherits: example

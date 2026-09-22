@@ -2,3 +2,17 @@ Cursors:
 	cursors/assets/default.png:
 		default:
 			Start: 0
+		harvest:
+			Start: 0
+		enter:
+			Start: 0
+		enter-blocked:
+			Start: 0
+		attack:
+			Start: 0
+		ability:
+			Start: 0
+		attackoutsiderange:
+			Start: 0
+		deploy:
+			Start: 0

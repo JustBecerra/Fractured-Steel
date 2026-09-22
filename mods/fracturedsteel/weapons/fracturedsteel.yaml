@@ -1,0 +1,29 @@
+paladingun:
+	ReloadDelay: 25
+	Range: 6c0
+	ValidTargets: Ground, GroundActor
+	Projectile: InstantHit
+	Warhead@1Dam: SpreadDamage
+		Spread: 128
+		Damage: 2500
+		ValidTargets: GroundActor
+
+turretgun:
+	ReloadDelay: 25
+	Range: 6c0
+	ValidTargets: Ground, GroundActor
+	Projectile: InstantHit
+	Warhead@1Dam: SpreadDamage
+		Spread: 128
+		Damage: 2500
+		ValidTargets: GroundActor
+
+sword:
+	ReloadDelay: 30
+	Range: 1c512
+	ValidTargets: Ground, GroundActor
+	Projectile: InstantHit
+	Warhead@1Dam: SpreadDamage
+		Spread: 256
+		Damage: 4000
+		ValidTargets: GroundActor

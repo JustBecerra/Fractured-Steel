@@ -70,12 +70,97 @@ Container@PLAYER_WIDGETS:
 							Font: Bold
 							Contrast: true
 							Visible: false
-				MenuButton@OPTIONS_BUTTON:
-					X: PARENT_WIDTH - WIDTH - 8
-					Y: 8
-					Width: 160
-					Height: 25
-					Text: button-observer-widgets-options
-					Font: Bold
-					Key: escape
-					DisableWorldSounds: true
+		MenuButton@OPTIONS_BUTTON:
+			X: PARENT_WIDTH - WIDTH - 8
+			Y: 8
+			Width: 160
+			Height: 25
+			Text: button-observer-widgets-options
+			Font: Bold
+			Key: escape
+		Container@PRODUCTION:
+			Logic: ProductionGroupLogic
+			X: PARENT_WIDTH - WIDTH - 8
+			Y: 64
+			Width: 200
+			Height: 280
+			Children:
+				Container@PRODUCTION_TYPES:
+					Width: PARENT_WIDTH
+					Height: 24
+					Children:
+						ProductionTypeButton@BUILDING:
+							Width: 48
+							Height: 22
+							VisualHeight: 0
+							Background: button
+							Text: Bld
+							ProductionGroup: Building
+						ProductionTypeButton@DEFENSE:
+							X: 50
+							Width: 48
+							Height: 22
+							VisualHeight: 0
+							Background: button
+							Text: Def
+							ProductionGroup: Defense
+						ProductionTypeButton@VEHICLE:
+							X: 100
+							Width: 48
+							Height: 22
+							VisualHeight: 0
+							Background: button
+							Text: Veh
+							ProductionGroup: Vehicle
+						ProductionTypeButton@MECH:
+							X: 150
+							Width: 48
+							Height: 22
+							VisualHeight: 0
+							Background: button
+							Text: Mch
+							ProductionGroup: Mech
+				LogicTicker@PRODUCTION_TICKER:
+				ProductionPalette@PRODUCTION_PALETTE:
+					Y: 26
+					Width: PARENT_WIDTH
+					Height: 250
+					IconSize: 48, 48
+					IconMargin: 2, 2
+					Columns: 4
+					ClockAnimation: clock
+					ClockSequence: idle
+					ClockPalette: greyscale
+					NotBuildableAnimation: clock
+					NotBuildableSequence: idle
+					NotBuildablePalette: greyscale
+					ReadyText: productionpalette-sidebar-production-palette.ready
+					HoldText: productionpalette-sidebar-production-palette.hold
+					HotkeyCount: 0
+		Container@ASSEMBLY_LOADOUT:
+			Logic: AssemblyLoadoutLogic
+			X: 176
+			Y: WINDOW_HEIGHT - 250
+			Width: 420
+			Height: 56
+			Visible: false
+			Children:
+				Background@ASSEMBLY_BG:
+					Width: PARENT_WIDTH
+					Height: PARENT_HEIGHT
+					Children:
+						Label@ASSEMBLY_TITLE:
+							X: 8
+							Y: 4
+							Width: PARENT_WIDTH - 16
+							Height: 20
+							Font: Bold
+							Contrast: true
+							Text: label-assembly-loadout-title
+						Label@ASSEMBLY_DETAIL:
+							X: 8
+							Y: 28
+							Width: PARENT_WIDTH - 16
+							Height: 20
+							Font: Regular
+							Contrast: true

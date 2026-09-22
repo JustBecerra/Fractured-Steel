@@ -24,6 +24,8 @@ namespace OpenRA.Mods.Example.Widgets
 		public static readonly Dictionary<string, string> ByActor = new()
 		{
 			["fs_tank"] = "tank",
+			["fs_paladin"] = "tank",
+			["fs_frame"] = "tank",
 			["fs_sentinel"] = "eship",
 			["fs_hq"] = "hq",
 			["fs_academy"] = "academy"

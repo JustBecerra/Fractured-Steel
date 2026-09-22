@@ -13,6 +13,7 @@ Notifications:
 Rules:
 	fracturedsteel|rules/example.yaml
 	fracturedsteel|rules/fracturedsteel.yaml
+	fracturedsteel|rules/structures.yaml
 	fracturedsteel|rules/mpspawn.yaml
 	fracturedsteel|rules/palettes.yaml
 	fracturedsteel|rules/player.yaml
@@ -32,3 +33,4 @@ Voices:
 
 Weapons:
 	fracturedsteel|weapons/example.yaml
+	fracturedsteel|weapons/fracturedsteel.yaml

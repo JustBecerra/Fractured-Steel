@@ -7,6 +7,9 @@ General:
 Terrain:
 	TerrainType@Clear:
 		Type: Clear
+	TerrainType@Alloy:
+		Type: Alloy
+		Color: 7A5A32
 
 Templates:
 	Template@255:

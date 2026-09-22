@@ -50,3 +50,11 @@ button-replay-player-maximum =
 
 ## ingame-player.yaml
 label-selection-empty = No unit selected
+
+productionpalette-sidebar-production-palette =
+    .ready = READY
+    .hold = ON HOLD
+
+label-assembly-loadout-title = Frame loadout
+label-assembly-loadout-detail = Assault torso · Bipedal legs · Sword · Shield
+

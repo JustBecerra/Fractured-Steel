@@ -33,16 +33,40 @@ world:
 		Name: fsvehicle
 		TerrainSpeeds:
 			Clear: 100
+			Alloy: 70
 	# Tracked vehicles get their own locomotor so their terrain handling can
 	# diverge later: rough ground should slow tracks down, and tracks are where
-	# crushing belongs. Identical for now, since Clear is the only terrain type.
+	# crushing belongs. Alloy dumps are walkable so the dozer can extract them.
 	Locomotor@fstracked:
 		Name: fstracked
 		TerrainSpeeds:
 			Clear: 100
+			Alloy: 70
+	# Alloy is a map resource (junkyards). ResourceIndex 1 is stored per cell
+	# in map.bin. 6 cells × MaxDensity 10 × 500 credits = 30000 per dump.
+	ResourceLayer:
+		ResourceTypes:
+			Alloy:
+				ResourceIndex: 1
+				TerrainType: Alloy
+				AllowedTerrainTypes: Clear
+				MaxDensity: 10
+	ResourceRenderer:
+		ResourceTypes:
+			Alloy:
+				Image: resources
+				Sequences: junk01, junk02, junk03
+				Palette: greyscale
+				Name: resource-alloy.name
+	ResourceClaimLayer:
 	ColorPickerManager:
 		PreviewActor: example.colorpicker
 	CreateMapPlayers:
+	MapOptions:
+		ShortGameCheckboxEnabled: true
+		ShortGameCheckboxDisplayOrder: 2
+		TechLevelDropdownVisible: false
+		GameSpeedDropdownDisplayOrder: 1
 	CustomTerrainDebugOverlay:
 	DebugVisualizations:
 	MapStartingLocations:
@@ -50,15 +74,31 @@ world:
 	SpawnStartingUnits:
 	StartingUnits@Example:
 		BaseActor: fs_hq
-		SupportActors: fs_sentinel, fs_tank, fs_tank
+		SupportActors: fs_sentinel, fs_paladin, fs_paladin
 		Factions: example
 		ClassName: options-starting-units.unlabeled
+	ProductionQueueFromSelection:
+		ProductionPaletteWidget: PRODUCTION_PALETTE
 
 editorworld:
 	Inherits: ^baseworld
 	BuildableTerrainOverlay:
 		AllowedTerrainTypes:
 		Palette:
+	EditorResourceLayer:
+		ResourceTypes:
+			Alloy:
+				ResourceIndex: 1
+				TerrainType: Alloy
+				AllowedTerrainTypes: Clear
+				MaxDensity: 10
+	ResourceRenderer:
+		ResourceTypes:
+			Alloy:
+				Image: resources
+				Sequences: junk01, junk02, junk03
+				Palette: greyscale
+				Name: resource-alloy.name
 	EditorActionManager:
 	EditorActorLayer:
 	EditorCursorLayer:

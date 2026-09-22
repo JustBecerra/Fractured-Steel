@@ -9,10 +9,99 @@
 	Shroud:
 		FogCheckboxEnabled: false
 		FogCheckboxLocked: true
+	PlayerResources:
+		ResourceValues:
+			Alloy: 500
+		DefaultCash: 5000
+		SelectableCash: 2500, 5000, 10000, 20000
 
 player:
 	Inherits: ^baseplayer
 	DeveloperMode:
+	# AutoTarget concatenates FrozenActorLayer when units can move to engage.
+	# Fog is off, but the layer must still exist or idle Paladins/Frames NRE.
+	FrozenActorLayer:
+	PowerManager:
+	TechTree:
+	PlaceBuilding:
+	MissionObjectives:
+	ConquestVictoryConditions:
+		Objective: Destroy the enemy base.
+	ClassicProductionQueue@Building:
+		Type: Building
+		Group: Building
+		DisplayOrder: 1
+		LowPowerModifier: 200
+		BuildDurationModifier: 100
+	ClassicProductionQueue@Defense:
+		Type: Defense
+		Group: Defense
+		DisplayOrder: 2
+		LowPowerModifier: 200
+		BuildDurationModifier: 100
+	ClassicProductionQueue@Vehicle:
+		Type: Vehicle
+		Group: Vehicle
+		DisplayOrder: 3
+		LowPowerModifier: 200
+		BuildDurationModifier: 100
+	ClassicProductionQueue@Mech:
+		Type: Mech
+		Group: Mech
+		DisplayOrder: 4
+		LowPowerModifier: 200
+		BuildDurationModifier: 100
+	ModularBot@Easy:
+		Name: bot-easy.name
+		Type: easy
+	BaseBuilderBotModule:
+		ConstructionYardTypes: fs_hq
+		VehiclesFactoryTypes: fs_vfoundry, fs_assembly
+		RefineryTypes: fs_plant
+		PowerTypes: fs_reactor
+		BarracksTypes: fs_academy
+		ProductionTypes: fs_vfoundry, fs_assembly
+		DefenseTypes: fs_turret
+		BuildingQueues: Building
+		DefenseQueues: Defense
+		MinimumExcessPower: 40
+		BuildingFractions:
+			fs_reactor: 20
+			fs_plant: 15
+			fs_vfoundry: 10
+			fs_academy: 5
+			fs_mfoundry: 5
+			fs_assembly: 5
+			fs_techlab: 5
+			fs_turret: 20
+		BuildingLimits:
+			fs_plant: 2
+			fs_vfoundry: 1
+			fs_academy: 1
+			fs_mfoundry: 1
+			fs_assembly: 1
+			fs_techlab: 1
+			fs_turret: 4
+			fs_reactor: 4
+	HarvesterBotModule:
+		HarvesterTypes: fs_sentinel
+		RefineryTypes: fs_plant
+	UnitBuilderBotModule:
+		UnitQueues: Vehicle, Mech
+		UnitsToBuild:
+			fs_paladin: 70
+			fs_sentinel: 10
+			fs_frame: 20
+		UnitLimits:
+			fs_sentinel: 3
+			fs_frame: 4
+		ProductionMinCashRequirement: 400
+	SquadManagerBotModule:
+		ExcludeFromSquadsTypes: fs_sentinel, fs_hq
+		ConstructionYardTypes: fs_hq
+		ProtectionTypes: fs_hq, fs_plant, fs_vfoundry, fs_assembly
+		SquadSize: 3
+		SquadSizeRandomBonus: 2
 
 editorplayer:
 	Inherits: ^baseplayer

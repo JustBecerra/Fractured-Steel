@@ -30,12 +30,12 @@ Players:
 		Name: Multi0
 		Playable: True
 		Faction: Random
-		Enemies: Creeps
+		Enemies: Creeps, Multi1
 	PlayerReference@Multi1:
 		Name: Multi1
 		Playable: True
 		Faction: Random
-		Enemies: Creeps
+		Enemies: Creeps, Multi0
 
 Actors:
 	Actor0: mpspawn

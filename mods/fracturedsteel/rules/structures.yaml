@@ -1,0 +1,221 @@
+# Economy and tech-tree buildings. Costs and power match docs/gdd.md.
+
+fs_reactor:
+	Inherits: ^constructed
+	Building:
+		Footprint: xxx xxx xxx
+		Dimensions: 3,3
+	RenderSprites:
+		Image: reactor
+	Tooltip:
+		Name: Reactor
+	Valued:
+		Cost: 500
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 200
+		Description: building-reactor.description
+	Health:
+		HP: 60000
+	Selectable:
+		Bounds: 2880, 2880
+	Power:
+		Amount: 80
+	ProvidesPrerequisite:
+		Prerequisite: fs_reactor
+
+fs_plant:
+	Inherits: ^constructed
+	Building:
+		Footprint: xxxx xxxx xxxx
+		Dimensions: 4,3
+	RenderSprites:
+		Image: plant
+	Tooltip:
+		Name: Processing Plant
+	Valued:
+		Cost: 1500
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 400
+		Prerequisites: ~structures, fs_reactor
+		Description: building-plant.description
+	Health:
+		HP: 90000
+	Selectable:
+		Bounds: 3456, 2560
+	Power:
+		Amount: -30
+	Refinery:
+		UseStorage: true
+	DockHost:
+		Type: Unload
+		DockAngle: 0
+		DockOffset: 2c0, 0, 0
+	StoresPlayerResources:
+		Capacity: 20000
+	FreeActor:
+		Actor: fs_sentinel
+		SpawnOffset: 4,1
+	ProvidesPrerequisite:
+		Prerequisite: fs_plant
+
+fs_vfoundry:
+	Inherits: ^constructed
+	Building:
+		Footprint: xxxx xxxx xxxx xxxx
+		Dimensions: 4,4
+	RenderSprites:
+		Image: vfoundry
+	Tooltip:
+		Name: Vehicle Foundry
+	Valued:
+		Cost: 2000
+	Buildable:
+		BuildPaletteOrder: 30
+		BuildDuration: 500
+		Prerequisites: ~structures, fs_plant
+		Description: building-vfoundry.description
+	Health:
+		HP: 100000
+	Selectable:
+		Bounds: 3456, 3456
+	Power:
+		Amount: -40
+	Production:
+		Produces: Vehicle
+	PrimaryBuilding:
+		Cursor: default
+	Exit@1:
+		SpawnOffset: 0,0,0
+		ExitCell: 4,2
+	ProvidesPrerequisite:
+		Prerequisite: fs_vfoundry
+
+fs_turret:
+	Inherits: ^constructed
+	Building:
+		Footprint: xx xx
+		Dimensions: 2,2
+	RenderSprites:
+		Image: turret
+	Tooltip:
+		Name: Defense Turret
+	Valued:
+		Cost: 600
+	Buildable:
+		Queue: Defense
+		BuildPaletteOrder: 10
+		BuildDuration: 250
+		Prerequisites: ~structures, fs_plant
+		Description: building-turret.description
+	Health:
+		HP: 40000
+	Selectable:
+		Bounds: 1920, 1920
+	Power:
+		Amount: -15
+	Turreted:
+		TurnSpeed: 28
+	AttackTurreted:
+	Armament:
+		Weapon: turretgun
+		Cursor: default
+		OutsideRangeCursor: attackoutsiderange
+		MuzzlePalette: greyscale
+	AutoTarget:
+		AllowMovement: false
+	AutoTargetPriority@DEFAULT:
+		ValidTargets: Ground, GroundActor
+		ValidRelationships: Enemy
+
+fs_mfoundry:
+	Inherits: ^constructed
+	Building:
+		Footprint: xxxx xxxx xxxx xxxx
+		Dimensions: 4,4
+	RenderSprites:
+		Image: mfoundry
+	Tooltip:
+		Name: Mech Foundry
+	Valued:
+		Cost: 2500
+	Buildable:
+		BuildPaletteOrder: 50
+		BuildDuration: 600
+		Prerequisites: ~structures, fs_vfoundry, fs_academy
+		Description: building-mfoundry.description
+	Health:
+		HP: 110000
+	Selectable:
+		Bounds: 3456, 3456
+	Power:
+		Amount: -50
+	ProvidesPrerequisite:
+		Prerequisite: fs_mfoundry
+
+fs_assembly:
+	Inherits: ^constructed
+	Building:
+		Footprint: xxxxx xxxxx xxxxx xxxxx xxxxx
+		Dimensions: 5,5
+	RenderSprites:
+		Image: assembly
+	Tooltip:
+		Name: Mech Assembly
+	Valued:
+		Cost: 3000
+	Buildable:
+		BuildPaletteOrder: 60
+		BuildDuration: 700
+		Prerequisites: ~structures, fs_mfoundry
+		Description: building-assembly.description
+	Health:
+		HP: 120000
+	Selectable:
+		Bounds: 4096, 4096
+	Power:
+		Amount: -50
+	Production:
+		Produces: Mech
+	PrimaryBuilding:
+		Cursor: default
+	Exit@1:
+		SpawnOffset: 0,0,0
+		ExitCell: 5,2
+	AssemblyBay:
+	GrantExternalConditionToProduced@TORSO:
+		Condition: torso-assault
+	GrantExternalConditionToProduced@LEGS:
+		Condition: legs-bipedal
+	GrantExternalConditionToProduced@LEFT:
+		Condition: arm-sword
+	GrantExternalConditionToProduced@RIGHT:
+		Condition: arm-shield
+	ProvidesPrerequisite:
+		Prerequisite: fs_assembly
+
+fs_techlab:
+	Inherits: ^constructed
+	Building:
+		Footprint: xxx xxx xxx
+		Dimensions: 3,3
+	RenderSprites:
+		Image: techlab
+	Tooltip:
+		Name: Tech Lab
+	Valued:
+		Cost: 2000
+	Buildable:
+		BuildPaletteOrder: 70
+		BuildDuration: 500
+		Prerequisites: ~structures, fs_assembly
+		Description: building-techlab.description
+	Health:
+		HP: 70000
+	Selectable:
+		Bounds: 2880, 2880
+	Power:
+		Amount: -30
+	ProvidesPrerequisite:
+		Prerequisite: fs_techlab
