@@ -14,9 +14,11 @@ namespace OpenRA.Mods.Example.Widgets.Logic
 	/// </summary>
 	public class SelectionStripLogic : ChromeLogic
 	{
-		const int SingleTextX = 352;
-		const int MultiTextX = 176;
-		const int OptionsReserve = 176;
+		// Third panel, just after the building separator. The resource
+		// column on the right is kept clear by OptionsReserve.
+		const int SingleTextX = 736;
+		const int MultiTextX = 568;
+		const int OptionsReserve = 312;
 
 		[ObjectCreator.UseCtor]
 		public SelectionStripLogic(Widget widget, World world)
@@ -28,7 +30,6 @@ namespace OpenRA.Mods.Example.Widgets.Logic
 			var portraitBg = widget.Get("PORTRAIT_BG");
 			var text = widget.Get("SELECTION_TEXT");
 			var strip = widget.Get<SelectionPortraitsWidget>("SELECTION_STRIP");
-
 			var name = "";
 			var detail = "";
 			var empty = true;
@@ -41,7 +42,7 @@ namespace OpenRA.Mods.Example.Widgets.Logic
 			detailLabel.GetText = () => detail;
 			nameLabel.IsVisible = () => !empty;
 			detailLabel.IsVisible = () => !empty && !showStrip;
-			emptyLabel.IsVisible = () => empty;
+			emptyLabel.IsVisible = () => false;
 			portrait.GetImageName = () => portraitName;
 			portrait.IsVisible = () => showLargePortrait;
 			portraitBg.IsVisible = () => showLargeFrame;

@@ -4,28 +4,61 @@ Container@PLAYER_WIDGETS:
 		LogicKeyListener@DEPLOY_KEY_LISTENER:
 		LogicTicker@SIDEBAR_TICKER:
 		LogicTicker@SELECTION_TICKER:
-		# Bottom HUD: minimap + selection readout. Uses the dialog chrome we
-		# already ship. RA's command-bar / sidebar art is not in this mod.
+		# Bottom HUD. Four panels under the blue cap: radar, buildings,
+		# selected units, then power / alloy / personnel.
 		Background@BOTTOM_BAR:
+			Background: hud-bar
 			Y: WINDOW_HEIGHT - HEIGHT
 			Width: WINDOW_WIDTH
-			Height: 176
+			Height: 188
 			Children:
+				# Pipes rise above the cap. Their lowest pixel is the cap's
+				# bottom edge, so no panel content is covered.
+				Background@PIPE_RUN:
+					Background: hud-pipe-run
+					ClickThrough: true
+					X: 48
+					Y: -18
+					Width: PARENT_WIDTH - 96
+					Height: 40
+				Image@PIPES_LEFT:
+					X: 0
+					Y: -18
+					Width: 64
+					Height: 40
+					ImageCollection: hud-pipes
+					ImageName: left
+				Image@PIPES_RIGHT:
+					X: PARENT_WIDTH - 64
+					Y: -18
+					Width: 64
+					Height: 40
+					ImageCollection: hud-pipes
+					ImageName: right
 				Background@RADAR_BG:
+					Background: hud-well
 					X: 8
-					Y: 8
+					Y: 22
 					Width: 160
 					Height: 160
 					Children:
 						Radar@INGAME_RADAR:
-							X: 5
-							Y: 5
-							Width: PARENT_WIDTH - 10
-							Height: PARENT_HEIGHT - 10
+							X: 6
+							Y: 6
+							Width: PARENT_WIDTH - 12
+							Height: PARENT_HEIGHT - 12
 							WorldInteractionController: INTERACTION_CONTROLLER
+				Background@STRAND_RADAR:
+					Background: hud-strand
+					ClickThrough: true
+					X: 168
+					Y: 22
+					Width: 24
+					Height: 160
 				Background@PORTRAIT_BG:
-					X: 176
-					Y: 8
+					Background: hud-well
+					X: 568
+					Y: 22
 					Width: 160
 					Height: 160
 					Children:
@@ -36,9 +69,9 @@ Container@PLAYER_WIDGETS:
 							ImageName: tank
 							Visible: false
 				SelectionPortraits@SELECTION_STRIP:
-					X: 176
-					Y: 48
-					Width: PARENT_WIDTH - 352
+					X: 568
+					Y: 62
+					Width: PARENT_WIDTH - 880
 					Height: 120
 					IconWidth: 56
 					IconHeight: 56
@@ -46,9 +79,9 @@ Container@PLAYER_WIDGETS:
 					ImageCollection: portraits
 					Visible: false
 				Container@SELECTION_TEXT:
-					X: 352
-					Y: 16
-					Width: PARENT_WIDTH - 528
+					X: 736
+					Y: 30
+					Width: PARENT_WIDTH - 1048
 					Height: 60
 					Children:
 						Label@SELECTION_EMPTY:
@@ -70,6 +103,65 @@ Container@PLAYER_WIDGETS:
 							Font: Bold
 							Contrast: true
 							Visible: false
+				BuildingMenu@PRODUCTION:
+					X: 196
+					Y: 22
+					Width: 344
+					Height: 160
+					Actors: fs_reactor, fs_plant, fs_vfoundry, fs_turret, fs_academy, fs_mfoundry, fs_assembly, fs_techlab
+				Background@STRAND_BUILDINGS:
+					Background: hud-strand
+					ClickThrough: true
+					X: 544
+					Y: 22
+					Width: 24
+					Height: 160
+				Background@STRAND_RESOURCES:
+					Background: hud-strand
+					ClickThrough: true
+					X: PARENT_WIDTH - 304
+					Y: 22
+					Width: 24
+					Height: 160
+				Container@RESOURCES:
+					Logic: ResourceCountersLogic
+					X: PARENT_WIDTH - 272
+					Y: 36
+					Width: 248
+					Height: 144
+					Children:
+						Image@ICON_POWER:
+							ImageCollection: resource-icons
+							ImageName: power
+						Label@POWER_COUNT:
+							X: 40
+							Y: 2
+							Width: 200
+							Height: 28
+							Font: Bold
+							Contrast: true
+						Image@ICON_ALLOY:
+							Y: 48
+							ImageCollection: resource-icons
+							ImageName: alloy
+						Label@ALLOY_COUNT:
+							X: 40
+							Y: 50
+							Width: 200
+							Height: 28
+							Font: Bold
+							Contrast: true
+						Image@ICON_CREW:
+							Y: 96
+							ImageCollection: resource-icons
+							ImageName: crew
+						Label@CREW_COUNT:
+							X: 40
+							Y: 98
+							Width: 200
+							Height: 28
+							Font: Bold
+							Contrast: true
 		MenuButton@OPTIONS_BUTTON:
 			X: PARENT_WIDTH - WIDTH - 8
 			Y: 8
@@ -78,65 +170,6 @@ Container@PLAYER_WIDGETS:
 			Text: button-observer-widgets-options
 			Font: Bold
 			Key: escape
-		Container@PRODUCTION:
-			Logic: ProductionGroupLogic
-			X: PARENT_WIDTH - WIDTH - 8
-			Y: 64
-			Width: 200
-			Height: 280
-			Children:
-				Container@PRODUCTION_TYPES:
-					Width: PARENT_WIDTH
-					Height: 24
-					Children:
-						ProductionTypeButton@BUILDING:
-							Width: 48
-							Height: 22
-							VisualHeight: 0
-							Background: button
-							Text: Bld
-							ProductionGroup: Building
-						ProductionTypeButton@DEFENSE:
-							X: 50
-							Width: 48
-							Height: 22
-							VisualHeight: 0
-							Background: button
-							Text: Def
-							ProductionGroup: Defense
-						ProductionTypeButton@VEHICLE:
-							X: 100
-							Width: 48
-							Height: 22
-							VisualHeight: 0
-							Background: button
-							Text: Veh
-							ProductionGroup: Vehicle
-						ProductionTypeButton@MECH:
-							X: 150
-							Width: 48
-							Height: 22
-							VisualHeight: 0
-							Background: button
-							Text: Mch
-							ProductionGroup: Mech
-				LogicTicker@PRODUCTION_TICKER:
-				ProductionPalette@PRODUCTION_PALETTE:
-					Y: 26
-					Width: PARENT_WIDTH
-					Height: 250
-					IconSize: 48, 48
-					IconMargin: 2, 2
-					Columns: 4
-					ClockAnimation: clock
-					ClockSequence: idle
-					ClockPalette: greyscale
-					NotBuildableAnimation: clock
-					NotBuildableSequence: idle
-					NotBuildablePalette: greyscale
-					ReadyText: productionpalette-sidebar-production-palette.ready
-					HoldText: productionpalette-sidebar-production-palette.hold
-					HotkeyCount: 0
 		Container@ASSEMBLY_LOADOUT:
 			Logic: AssemblyLoadoutLogic
 			X: 176

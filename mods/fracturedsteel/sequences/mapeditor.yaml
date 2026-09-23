@@ -1,6 +1,8 @@
 overlay:
+	Defaults:
+		Filename: sequences/assets/build-overlay.png
+	build-valid:
 	build-invalid:
-		Filename: sequences/assets/mapeditor.png
 		Start: 1
 
 editor-overlay:
