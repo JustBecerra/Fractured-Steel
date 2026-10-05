@@ -64,6 +64,13 @@ smoke:
 		Tick: 80
 		IgnoreWorldTint: true
 
+# Bolt with a red circle-and-slash, shown above a building the base cannot power.
+# Drawn by tools/make_resource_icons.py.
+energyicon:
+	idle:
+		Filename: sequences/assets/energy.png
+		IgnoreWorldTint: true
+
 selectring:
 	idle:
 		Filename: sequences/assets/ring.png

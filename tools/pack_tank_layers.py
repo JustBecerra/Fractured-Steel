@@ -6,17 +6,26 @@ Run from the repository root after tools/render_tank_layers.py:
 
 Side-on turret frames are shifted down so the gunhouse sits on the fenders.
 The drop is 0 at north/south and peaks at east/west.
+
+Team-colour parts come from the *_mask renders and are repainted by
+tools/team_color.py so the engine swaps in each player's colour.
 """
 from math import pi, sin
 from pathlib import Path
 
 from PIL import Image, PngImagePlugin
 
+from team_color import tint
+
 SRC = Path("art/placeholders/tank")
 OUT = Path("mods/fracturedsteel/sequences/assets/tank.png")
 FRAME = 60
 FACINGS = 32
 SIDE_DROP = 3
+
+
+def load(name):
+    return Image.open(SRC / name).convert("RGBA").resize((FRAME, FRAME), Image.LANCZOS)
 
 
 def turret_drop(facing):
@@ -26,8 +35,8 @@ def turret_drop(facing):
 def main():
     sheet = Image.new("RGBA", (FRAME * FACINGS, FRAME * 2), (0, 0, 0, 0))
     for i in range(FACINGS):
-        hull = Image.open(SRC / f"hull_{i:02d}.png").convert("RGBA").resize((FRAME, FRAME), Image.LANCZOS)
-        turret = Image.open(SRC / f"turret_{i:02d}.png").convert("RGBA").resize((FRAME, FRAME), Image.LANCZOS)
+        hull = tint(load(f"hull_{i:02d}.png"), load(f"hull_mask_{i:02d}.png"))
+        turret = tint(load(f"turret_{i:02d}.png"), load(f"turret_mask_{i:02d}.png"))
         drop = turret_drop(i)
         if drop:
             seated = Image.new("RGBA", (FRAME, FRAME), (0, 0, 0, 0))

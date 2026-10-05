@@ -11,7 +11,7 @@
 		FogCheckboxLocked: true
 	PlayerResources:
 		ResourceValues:
-			Alloy: 500
+			Alloy: 1
 		DefaultCash: 5000
 		SelectableCash: 2500, 5000, 10000, 20000
 
@@ -31,26 +31,39 @@ player:
 		Type: Building
 		Group: Building
 		DisplayOrder: 1
-		LowPowerModifier: 200
+		# A shortfall freezes the queue. The modifier is the stock slowdown,
+		# set high enough that a build does not advance until power returns.
+		LowPowerModifier: 1000000
 		BuildDurationModifier: 100
+		PayUpFront: true
 	ClassicProductionQueue@Defense:
 		Type: Defense
 		Group: Defense
 		DisplayOrder: 2
-		LowPowerModifier: 200
+		LowPowerModifier: 1000000
 		BuildDurationModifier: 100
+		PayUpFront: true
+	ClassicProductionQueue@Harvester:
+		Type: Harvester
+		Group: Harvester
+		DisplayOrder: 5
+		LowPowerModifier: 1000000
+		BuildDurationModifier: 100
+		PayUpFront: true
 	ClassicProductionQueue@Vehicle:
 		Type: Vehicle
 		Group: Vehicle
 		DisplayOrder: 3
-		LowPowerModifier: 200
+		LowPowerModifier: 1000000
 		BuildDurationModifier: 100
+		PayUpFront: true
 	ClassicProductionQueue@Mech:
 		Type: Mech
 		Group: Mech
 		DisplayOrder: 4
-		LowPowerModifier: 200
+		LowPowerModifier: 1000000
 		BuildDurationModifier: 100
+		PayUpFront: true
 	ModularBot@Easy:
 		Name: bot-easy.name
 		Type: easy
@@ -64,7 +77,7 @@ player:
 		DefenseTypes: fs_turret
 		BuildingQueues: Building
 		DefenseQueues: Defense
-		MinimumExcessPower: 40
+		MinimumExcessPower: 2
 		BuildingFractions:
 			fs_reactor: 20
 			fs_plant: 15

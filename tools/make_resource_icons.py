@@ -7,6 +7,7 @@ Run from the repository root:
 from PIL import Image, ImageDraw
 
 OUT = "mods/fracturedsteel/chrome/assets/resource-icons.png"
+OUTAGE = "mods/fracturedsteel/sequences/assets/energy.png"
 SIZE = 32
 
 
@@ -19,6 +20,23 @@ def power():
 	draw = ImageDraw.Draw(img)
 	bolt = [(18, 1), (7, 15), (14, 15), (8, 31), (26, 13), (17, 13), (27, 1)]
 	draw.polygon(bolt, fill=(255, 196, 48, 255), outline=(90, 58, 8, 255))
+	return img
+
+
+def power_out():
+	"""Bolt with a red circle-and-slash, shown when a building has no power."""
+	img = icon()
+	draw = ImageDraw.Draw(img)
+	cx, cy, scale = 17, 16, 0.55
+	bolt = [((x - cx) * scale + 16, (y - cy) * scale + 16) for x, y in (
+		(18, 1), (7, 15), (14, 15), (8, 31), (26, 13), (17, 13), (27, 1),
+	)]
+	draw.polygon(bolt, fill=(255, 196, 48, 255), outline=(90, 58, 8, 255))
+	# Dark edge first so the slash stays readable on pale roofs.
+	draw.ellipse((1, 1, 30, 30), outline=(110, 16, 16, 255), width=5)
+	draw.line((4, 4, 27, 27), fill=(110, 16, 16, 255), width=5)
+	draw.ellipse((2, 2, 29, 29), outline=(214, 36, 32, 255), width=3)
+	draw.line((6, 6, 25, 25), fill=(214, 36, 32, 255), width=3)
 	return img
 
 
@@ -51,7 +69,9 @@ def main():
 	sheet.paste(alloy(), (SIZE, 0), alloy())
 	sheet.paste(crew(), (SIZE * 2, 0), crew())
 	sheet.save(OUT)
+	power_out().save(OUTAGE)
 	print(f"wrote {OUT} {sheet.size}")
+	print(f"wrote {OUTAGE}")
 
 
 if __name__ == "__main__":

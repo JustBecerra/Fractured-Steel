@@ -109,6 +109,7 @@ Container@PLAYER_WIDGETS:
 					Width: 344
 					Height: 160
 					Actors: fs_reactor, fs_plant, fs_vfoundry, fs_turret, fs_academy, fs_mfoundry, fs_assembly, fs_techlab
+					Units: fs_sentinel, fs_paladin, fs_frame
 				Background@STRAND_BUILDINGS:
 					Background: hud-strand
 					ClickThrough: true

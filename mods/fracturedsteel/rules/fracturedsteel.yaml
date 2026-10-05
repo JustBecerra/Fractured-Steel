@@ -61,6 +61,7 @@
 	MustBeDestroyed:
 
 # Buildings the player places after the HQ. Hidden until an HQ provides `structures`.
+# A shortfall grants lowpower: the energy icon flashes and powered work stops.
 ^constructed:
 	Inherits: ^building
 	RequiresBuildableArea:
@@ -72,6 +73,18 @@
 		IconPalette: greyscale
 		BuildDurationModifier: 100
 		Prerequisites: ~structures
+	GrantConditionOnPowerState@LOWPOWER:
+		Condition: lowpower
+		ValidPowerStates: Low, Critical
+	WithDecoration@LOWPOWER:
+		RequiresCondition: lowpower
+		Image: energyicon
+		Sequence: idle
+		Palette: greyscale
+		Position: Top
+		Margin: 0,-16
+		BlinkInterval: 8
+		BlinkPattern: On, Off
 
 fs_sentinel:
 	Inherits: example
@@ -103,12 +116,27 @@ fs_sentinel:
 		TargetTypes: Ground, GroundActor
 	Valued:
 		Cost: 800
+	Buildable:
+		Queue: Harvester
+		BuildPaletteOrder: 10
+		BuildDuration: 250
+		BuildDurationModifier: 100
+		Icon: icon
+		IconPalette: greyscale
+		Prerequisites: ~fs_plant
+		Description: unit-dozer.description
 	Harvester:
 		Resources: Alloy
+		SearchOnCreation: false
 		SearchFromProcRadius: 24
 		HarvestCursor: harvest
+		# One bale per tick while beside the pile. Unload in chunks so a full
+		# 500 load does not sit at the plant for a full minute.
+		BaleLoadDelay: 1
+		BaleUnloadAmount: 20
+	AdjacentHarvester:
 	StoresResources:
-		Capacity: 20
+		Capacity: 500
 		Resources: Alloy
 	DockClientManager:
 		EnterCursor: enter
@@ -182,7 +210,6 @@ fs_tank:
 		OutsideRangeCursor: attackoutsiderange
 	WithSpriteTurret:
 		Sequence: turret
-		Palette: greyscale
 		Recoils: true
 	WithMuzzleOverlay:
 	AutoTarget:
@@ -263,7 +290,7 @@ fs_academy:
 		Prerequisites: ~structures, fs_plant
 		Description: building-academy.description
 	Power:
-		Amount: -20
+		Amount: -2
 	ProvidesPrerequisite:
 		Prerequisite: fs_academy
 

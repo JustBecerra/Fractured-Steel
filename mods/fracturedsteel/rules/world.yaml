@@ -33,24 +33,23 @@ world:
 		Name: fsvehicle
 		TerrainSpeeds:
 			Clear: 100
-			Alloy: 70
-	# Tracked vehicles get their own locomotor so their terrain handling can
-	# diverge later: rough ground should slow tracks down, and tracks are where
-	# crushing belongs. Alloy dumps are walkable so the dozer can extract them.
+	# Alloy cells are not in either locomotor, so nothing can path onto a pile.
+	# The dozer harvests from a neighbouring cell.
 	Locomotor@fstracked:
 		Name: fstracked
 		TerrainSpeeds:
 			Clear: 100
-			Alloy: 70
 	# Alloy is a map resource (junkyards). ResourceIndex 1 is stored per cell
-	# in map.bin. One cell × MaxDensity 60 × 500 credits = 30000 per dump.
+	# in map.bin. Density there is a byte, so AlloyPiles raises each painted
+	# cell to 30000. One density unit is one Alloy.
 	ResourceLayer:
 		ResourceTypes:
 			Alloy:
 				ResourceIndex: 1
 				TerrainType: Alloy
 				AllowedTerrainTypes: Clear
-				MaxDensity: 60
+				MaxDensity: 30000
+	AlloyPiles:
 	ResourceRenderer:
 		ResourceTypes:
 			Alloy:
@@ -90,7 +89,7 @@ editorworld:
 				ResourceIndex: 1
 				TerrainType: Alloy
 				AllowedTerrainTypes: Clear
-				MaxDensity: 60
+				MaxDensity: 30000
 	ResourceRenderer:
 		ResourceTypes:
 			Alloy:

@@ -9,6 +9,11 @@ Run:
 Hull keeps the existing camera and 60px frame. Turret meshes are shifted in
 XY so the ring sits on the pivot (frame centre); Turreted.Offset then places
 that centred sprite on the rear deck.
+
+Each layer is rendered twice: the normal pass, with team-colour parts in the
+white hull paint so they carry clean shading, and a mask pass where those
+parts are white and everything else is black. tools/pack_tank_layers.py uses
+the mask to tint them for the engine's PlayerColorShift.
 """
 from math import atan2, cos, pi, sin
 from pathlib import Path
@@ -28,6 +33,30 @@ TURRET = {
     "BoreEvac", "BoreEvacFlange_F", "BoreEvacFlange_R", "MuzzleBrake",
     "MG_AmmoBox", "MG_Barrel", "MG_FlashHider", "MG_Pintle", "MG_Receiver",
 }
+
+# Painted in the player's colour. Large surfaces that face the camera.
+TEAM = {"Fender_-1", "Fender_1", "Turret"}
+
+
+def emission_material(name, rgb):
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    nodes.clear()
+    out = nodes.new("ShaderNodeOutputMaterial")
+    em = nodes.new("ShaderNodeEmission")
+    em.inputs["Color"].default_value = (*rgb, 1.0)
+    em.inputs["Strength"].default_value = 1.0
+    mat.node_tree.links.new(em.outputs["Emission"], out.inputs["Surface"])
+    return mat
+
+
+def assign(obj, mat):
+    if not obj.material_slots:
+        obj.data.materials.append(mat)
+    for slot in obj.material_slots:
+        slot.link = "OBJECT"
+        slot.material = mat
 
 
 def facing_yaws(cam, count):
@@ -100,6 +129,15 @@ def main():
     yaws = facing_yaws(cam, FACINGS)
     print("yaws_deg", [round(y * 180 / pi, 1) for y in yaws])
 
+    team_objs = [o for o in meshes if o.name in TEAM]
+    missing = TEAM - {o.name for o in team_objs}
+    if missing:
+        raise SystemExit(f"missing team-colour meshes: {sorted(missing)}")
+
+    white = bpy.data.materials["White"]
+    for o in team_objs:
+        assign(o, white)
+
     def render_layer(name, hide_turret, spinner):
         for o in meshes:
             o.hide_render = (o.name in TURRET) if hide_turret else (o.name not in TURRET)
@@ -114,6 +152,17 @@ def main():
 
     render_layer("hull", hide_turret=True, spinner=pivot)
     render_layer("turret", hide_turret=False, spinner=spin)
+
+    # Mask pass. Flat emission under Standard so white stays exactly white.
+    # Black parts still occlude, so hidden team surfaces stay out of the mask.
+    sc.view_settings.view_transform = "Standard"
+    sc.view_settings.look = "None"
+    on = emission_material("TeamMaskOn", (1.0, 1.0, 1.0))
+    off = emission_material("TeamMaskOff", (0.0, 0.0, 0.0))
+    for o in meshes:
+        assign(o, on if o.name in TEAM else off)
+    render_layer("hull_mask", hide_turret=True, spinner=pivot)
+    render_layer("turret_mask", hide_turret=False, spinner=spin)
 
 
 if __name__ == "__main__":

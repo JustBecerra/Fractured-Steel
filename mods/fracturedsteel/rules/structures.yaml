@@ -1,4 +1,5 @@
-# Economy and tech-tree buildings. Costs and power match docs/gdd.md.
+# Economy and tech-tree buildings. A reactor supplies 6 energy.
+# Other buildings draw their own amount; a shortfall shuts them down.
 
 fs_reactor:
 	Inherits: ^constructed
@@ -20,7 +21,9 @@ fs_reactor:
 	Selectable:
 		Bounds: 2880, 2880
 	Power:
-		Amount: 80
+		Amount: 6
+	-GrantConditionOnPowerState@LOWPOWER:
+	-WithDecoration@LOWPOWER:
 	ProvidesPrerequisite:
 		Prerequisite: fs_reactor
 
@@ -45,7 +48,7 @@ fs_plant:
 	Selectable:
 		Bounds: 3456, 2560
 	Power:
-		Amount: -30
+		Amount: -2
 	Refinery:
 		UseStorage: true
 	DockHost:
@@ -57,6 +60,14 @@ fs_plant:
 	FreeActor:
 		Actor: fs_sentinel
 		SpawnOffset: 4,1
+	Production:
+		Produces: Harvester
+		PauseOnCondition: lowpower
+	PrimaryBuilding:
+		Cursor: default
+	Exit@1:
+		SpawnOffset: 0,0,0
+		ExitCell: 4,1
 	ProvidesPrerequisite:
 		Prerequisite: fs_plant
 
@@ -81,9 +92,10 @@ fs_vfoundry:
 	Selectable:
 		Bounds: 3456, 3456
 	Power:
-		Amount: -40
+		Amount: -3
 	Production:
 		Produces: Vehicle
+		PauseOnCondition: lowpower
 	PrimaryBuilding:
 		Cursor: default
 	Exit@1:
@@ -114,10 +126,11 @@ fs_turret:
 	Selectable:
 		Bounds: 1920, 1920
 	Power:
-		Amount: -15
+		Amount: -1
 	Turreted:
 		TurnSpeed: 28
 	AttackTurreted:
+		PauseOnCondition: lowpower
 	Armament:
 		Weapon: turretgun
 		Cursor: default
@@ -150,7 +163,7 @@ fs_mfoundry:
 	Selectable:
 		Bounds: 3456, 3456
 	Power:
-		Amount: -50
+		Amount: -4
 	ProvidesPrerequisite:
 		Prerequisite: fs_mfoundry
 
@@ -175,9 +188,10 @@ fs_assembly:
 	Selectable:
 		Bounds: 4096, 4096
 	Power:
-		Amount: -50
+		Amount: -4
 	Production:
 		Produces: Mech
+		PauseOnCondition: lowpower
 	PrimaryBuilding:
 		Cursor: default
 	Exit@1:
@@ -216,6 +230,6 @@ fs_techlab:
 	Selectable:
 		Bounds: 2880, 2880
 	Power:
-		Amount: -30
+		Amount: -2
 	ProvidesPrerequisite:
 		Prerequisite: fs_techlab
